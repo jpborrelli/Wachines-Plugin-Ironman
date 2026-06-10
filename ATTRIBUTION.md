@@ -46,3 +46,11 @@ its TypeScript sources). Copying only the `SKILL.md` files would produce broken 
 
 Install gstack directly instead — see the README for instructions. This repo intentionally
 does not redistribute it.
+
+### Kapso (WhatsApp)
+
+Kapso's WhatsApp skills (`integrate-whatsapp`, `automate-whatsapp`, `observe-whatsapp`) live
+in [gokapso/agent-skills](https://github.com/gokapso/agent-skills) and are **not** vendored
+here. They require a Kapso account + API key and are maintained upstream — install them from
+the source with `npx skills add gokapso/agent-skills`. (No license is declared on that repo,
+which is an additional reason not to redistribute it.)

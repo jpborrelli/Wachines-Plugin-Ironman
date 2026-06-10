@@ -88,6 +88,22 @@ Then run `/gstack-upgrade` any time to update. See the
 [gstack README](https://github.com/garrytan/gstack) for team mode and other agents
 (Codex, OpenCode, etc.).
 
+## Kapso — WhatsApp, referenced not bundled
+
+For WhatsApp integration, automation, and troubleshooting, Kapso publishes its own official
+skills at [**gokapso/agent-skills**](https://github.com/gokapso/agent-skills) — install them
+straight from the source (they need a Kapso account + API key, and are maintained upstream, so
+this repo doesn't vendor them):
+
+```bash
+npx skills add gokapso/agent-skills
+```
+
+Three skills: `integrate-whatsapp` (connect WhatsApp, webhooks, send messages/templates,
+flows), `automate-whatsapp` (workflows, agents, functions, databases), and `observe-whatsapp`
+(debug delivery, inspect webhooks, triage errors, health checks). There's also a CLI —
+`kapso login` / `kapso status` — see the [Kapso CLI docs](https://docs.kapso.ai/docs/whatsapp/cli).
+
 ## Contributing
 
 Open a branch and propose a skill via PR — see [CONTRIBUTING.md](CONTRIBUTING.md). The bar:
