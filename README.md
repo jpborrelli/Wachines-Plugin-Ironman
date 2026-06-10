@@ -32,6 +32,8 @@ have with `npx skills list`; search with `npx skills find <query>`.
 | [`vercel-react-best-practices`](skills/vercel-react-best-practices) | React/Next.js performance rules (57 rules, 8 categories) | Vercel · MIT |
 | [`next-best-practices`](skills/next-best-practices) | Next.js conventions: RSC boundaries, data patterns, async APIs, metadata, route handlers, image/font | Compiled from Next.js docs · MIT |
 | [`web-design-guidelines`](skills/web-design-guidelines) | Reviews UI code for accessibility & Web Interface Guidelines compliance (fetches the live guidelines) | Vercel · MIT |
+| [`frontend-design`](skills/frontend-design) | Builds distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics | Anthropic · Apache-2.0 |
+| [`html-perennia`](skills/html-perennia) | Prefer HTML over markdown for human-readable artifacts (plans, reviews, wireframes), with a cohesive earth-green palette | perennia-regen · MIT |
 | [`tanstack-query-hooks`](skills/tanstack-query-hooks) | Generates TanStack Query hooks: query/mutation hooks, automatic cache invalidation, loading/error states | perennia-regen · MIT |
 | [`db-reviewer`](skills/db-reviewer) | Reviews SQL migrations: naming, soft delete, `COMMENT ON`, `SECURITY DEFINER`, RLS, performance | perennia-regen · MIT |
 | [`security-reviewer`](skills/security-reviewer) | Reviews code for OWASP Top 10: injection, XSS, broken auth, secrets, insecure data (+ Supabase checks) | perennia-regen · MIT |

@@ -12,6 +12,7 @@ licenses are preserved below and in each skill's frontmatter.
 | `vercel-react-best-practices` | Vercel | MIT | Vercel Engineering agent skills |
 | `web-design-guidelines` | Vercel | MIT | [vercel-labs/web-interface-guidelines](https://github.com/vercel-labs/web-interface-guidelines) (the skill fetches the live guidelines at run time) |
 | `next-best-practices` | Compiled from the official [Next.js documentation](https://nextjs.org/docs) and community best practices | MIT (this compilation) | — |
+| `frontend-design` | Anthropic, PBC | Apache-2.0 | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design) — redistributed **unmodified**; the original `LICENSE.txt` is included in the skill folder |
 
 ## First-party skills & agents
 
@@ -21,9 +22,14 @@ licenses are preserved below and in each skill's frontmatter.
 | `docs-architect` (skill + agent) | perennia-regen | MIT |
 | `security-reviewer` (skill + agent) | perennia-regen | MIT |
 | `tanstack-query-hooks` (skill) | perennia-regen | MIT |
+| `html-perennia` (skill) | perennia-regen | MIT |
 
-These were generalized from internal tools — references to private domains, table names, and
-infrastructure were removed so they are reusable in any project. `db-reviewer` and
+Most were generalized from internal tools — references to private domains, table names, people,
+and infrastructure were removed so they are reusable in any project. `html-perennia` is the one
+deliberately **opinionated** skill: it keeps the Perennia brand palette and typography on
+purpose (that's its whole point), but internal URLs, repo paths, and team names were stripped.
+`db-reviewer` and `docs-architect` additionally ship an explicit, opt-in Perennia BackOffice
+overlay under their `references/` folder (architecture names only, no secrets). `db-reviewer` and
 `docs-architect` additionally ship an explicit, opt-in Perennia BackOffice overlay under their
 `references/` folder (architecture names only, no secrets) so the team can use them in that
 repo with zero configuration.
