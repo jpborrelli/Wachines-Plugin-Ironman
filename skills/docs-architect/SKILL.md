@@ -100,6 +100,10 @@ For audits, produce a structured report:
 
 ## Adapt to the project's conventions
 
+> **Perennia BackOffice:** if you are working in the BackOffice repo, the concrete config
+> (the `docs/` layout, `COMMENT ON` as living schema docs, the sub-agent streams to spawn) is
+> in [`references/perennia-backoffice.md`](references/perennia-backoffice.md). Load it first.
+
 Before auditing, learn the project's documentation rules from its `CLAUDE.md` / `AGENTS.md`
 and existing docs. Typical project-specific rules to honor:
 - Which doc file to update when the schema changes.

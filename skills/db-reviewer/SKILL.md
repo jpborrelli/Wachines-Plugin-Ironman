@@ -19,6 +19,11 @@ section so you can see the shape of a real configuration.
 
 ## Configure for your project (read this first)
 
+> **Perennia BackOffice:** if you are working in the BackOffice repo, the concrete config
+> (12 DDD domains, soft-delete table list, `private.*` RLS helpers, test guardrails) is in
+> [`references/perennia-backoffice.md`](references/perennia-backoffice.md). Load it and skip
+> the inference below.
+
 Before reviewing, establish the project's conventions. Look in this order:
 1. The project's `CLAUDE.md` / `AGENTS.md` for documented naming and schema rules.
 2. A schema dump (e.g. `schema-remote.sql`, `schema.sql`) — the **source of truth** for

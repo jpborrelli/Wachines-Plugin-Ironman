@@ -19,9 +19,14 @@ licenses are preserved below and in each skill's frontmatter.
 |------|--------|---------|
 | `db-reviewer` (skill + agent) | perennia-regen | MIT |
 | `docs-architect` (skill + agent) | perennia-regen | MIT |
+| `security-reviewer` (skill + agent) | perennia-regen | MIT |
+| `tanstack-query-hooks` (skill) | perennia-regen | MIT |
 
-These two were generalized from project-specific internal tools — all references to private
-domains, table names, and infrastructure were removed so they are reusable in any project.
+These were generalized from internal tools — references to private domains, table names, and
+infrastructure were removed so they are reusable in any project. `db-reviewer` and
+`docs-architect` additionally ship an explicit, opt-in Perennia BackOffice overlay under their
+`references/` folder (architecture names only, no secrets) so the team can use them in that
+repo with zero configuration.
 
 ## Referenced, NOT bundled
 
