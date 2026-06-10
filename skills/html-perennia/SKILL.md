@@ -1,6 +1,16 @@
 ---
 name: html-perennia
-description: Recordatorio + paleta para que Claude prefiera HTML sobre markdown cuando arma artefactos para que un humano lea, valide o interactúe — planning, validación, comparaciones, wireframes, mapas conceptuales, code review, decisiones, reports, editores ad-hoc. La skill NO impone un formato ni un catálogo de componentes: cada caso se diseña libremente. Solo asegura que (a) Claude considere HTML como default cuando el doc se va a leer o interactuar y (b) los colores/tipografías sean los de Perennia para que el artefacto se sienta parte del repo, no genérico. Activar cuando el usuario pida "plan", "spec", "doc", "review", "comparación", "wireframe", "mapa conceptual", "mockup", "reporte", "editor para X", "armame un HTML", o cuando Claude esté por escribir un markdown >100 líneas que un humano va a tener que leer/validar/compartir.
+description: >-
+  Recordatorio + paleta para que Claude prefiera HTML sobre markdown cuando arma artefactos
+  para que un humano lea, valide o interactúe — planning, validación, comparaciones, wireframes,
+  mapas conceptuales, code review, decisiones, reports, editores ad-hoc. La skill NO impone un
+  formato ni un catálogo de componentes; cada caso se diseña libremente. Solo asegura que (a)
+  Claude considere HTML como default cuando el doc se va a leer o interactuar y (b) los
+  colores/tipografías sean los de Perennia para que el artefacto se sienta parte del repo, no
+  genérico. Activar cuando el usuario pida "plan", "spec", "doc", "review", "comparación",
+  "wireframe", "mapa conceptual", "mockup", "reporte", "editor para X", "armame un HTML", o
+  cuando Claude esté por escribir un markdown de más de 100 líneas que un humano va a tener que
+  leer, validar o compartir.
 license: MIT
 metadata:
   author: perennia-regen
