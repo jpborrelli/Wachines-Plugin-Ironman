@@ -8,6 +8,10 @@ performance, a SQL-migration reviewer, and a documentation architect.
 Project-agnostic by design — no company-, domain-, or schema-specific content. Add the ones
 you want, contribute the ones you wish existed.
 
+> **¿Sos del equipo? Empezá por [SETUP.md](SETUP.md)** — instala todo el toolchain dev
+> (gstack + wachines-skills + gokapso) en un comando, y explica la política: las skills se
+> instalan desde repos centralizados, no se editan dentro de cada proyecto.
+
 ## Install
 
 Requires Node.js. Install all skills, or pick individual ones:
