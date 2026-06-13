@@ -30,15 +30,17 @@ fi
 
 # --- 2. skills vía npx ---------------------------------------------------------
 if have npx; then
-  say "Instalando wachines-skills (dev)"
-  npx -y skills add perennia-regen/wachines-skills -a claude-code || warn "falló wachines-skills"
+  # -g = global (user-level): cae en ~/.claude/skills, aplica a TODOS los proyectos, no se
+  # commitea en ningún repo. Sin -g, el CLI auto-detecta "project si estás dentro de un repo".
+  say "Instalando wachines-skills (dev) — global"
+  npx -y skills add perennia-regen/wachines-skills -g -a claude-code || warn "falló wachines-skills"
 
-  say "Instalando gokapso/agent-skills (WhatsApp/Kapso)"
-  npx -y skills add gokapso/agent-skills -a claude-code || warn "falló gokapso (¿necesita auth?)"
+  say "Instalando gokapso/agent-skills (WhatsApp/Kapso) — global"
+  npx -y skills add gokapso/agent-skills -g -a claude-code || warn "falló gokapso (¿necesita auth?)"
 
   if [ "${PERENNIA_BIZ:-}" = "1" ]; then
-    say "Instalando perennia-skills (negocio) — privado"
-    npx -y skills add perennia-regen/perennia-skills -a claude-code || warn "falló perennia-skills (¿auth gh?)"
+    say "Instalando perennia-skills (negocio) — privado, global"
+    npx -y skills add perennia-regen/perennia-skills -g -a claude-code || warn "falló perennia-skills (¿auth gh?)"
   else
     printf "\n   (equipo comercial: corré 'PERENNIA_BIZ=1 %s' para sumar perennia-skills)\n" "$0"
   fi

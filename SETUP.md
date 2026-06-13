@@ -30,15 +30,33 @@ sumá también **perennia-skills** (ver abajo).
 git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack \
   && cd ~/.claude/skills/gstack && ./setup
 
-# 2. skills de desarrollo (wachines)
-npx skills add perennia-regen/wachines-skills
+# 2. skills de desarrollo (wachines) — -g = global (todos los proyectos)
+npx skills add perennia-regen/wachines-skills -g
 
 # 3. WhatsApp/Kapso (si trabajás con BackOffice)
-npx skills add gokapso/agent-skills
+npx skills add gokapso/agent-skills -g
 
 # 4. skills comerciales (solo equipo de negocio)
-npx skills add perennia-regen/perennia-skills
+npx skills add perennia-regen/perennia-skills -g
 ```
+
+## Scope: global vs proyecto (importante)
+
+`npx skills` instala en uno de dos lugares:
+
+| Scope | Comando | Cae en | Aplica a |
+|-------|---------|--------|----------|
+| **Global** ✅ | `npx skills add <repo> -g` | `~/.claude/skills/` | **todos** los proyectos |
+| Proyecto | `npx skills add <repo>` (parado dentro del repo) | `.claude/skills/` | solo ese proyecto |
+
+- **Usá `-g` siempre** para el toolchain compartido. Como usamos el mismo stack en todos lados,
+  global = instalás una vez por máquina y lo tenés en todo.
+- ⚠️ Sin `-g`, el CLI **auto-detecta**: si lo corrés dentro de un proyecto, instala a scope
+  proyecto sin avisar. Por eso el bootstrap fuerza `-g`.
+- **El CLI NO toca `.gitignore`.** Una instalación a scope proyecto se commitearía al repo si no
+  la gitignoreás vos. En estos repos las skills compartidas ya están gitignoreadas — no las
+  re-instales a scope proyecto. Si un proyecto necesita un set propio, usá `skills-lock.json` +
+  `npx skills experimental_install` (patrón node_modules: commiteás el lock, gitignoreás los archivos).
 
 ## Mantener al día
 
