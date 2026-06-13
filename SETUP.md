@@ -84,3 +84,37 @@ que `node_modules`).
 
 **Regla mental:** ¿la skill sirve en más de un proyecto? → repo central + `npx skills add`.
 ¿Solo tiene sentido en este proyecto? → vive en este proyecto.
+
+## 🩺 Troubleshooting (baches reales de instalación)
+
+### `claude` no arranca, o `claude plugin` / `claude mcp` fallan
+Síntoma: `claude` tira `node_modules/.bin/claude: No such file or directory`. Pasa cuando el
+install local (`claude migrate-installer`, en `~/.claude/local/`) quedó con `node_modules` a medias
+y el alias `claude` apunta a ese launcher roto. Rompe el sistema de plugins/MCP desde la shell
+(y puede bloquear que otros instaladores registren sus MCP). Fix:
+```bash
+rm -rf ~/.claude/local/node_modules
+npm install --prefix ~/.claude/local
+~/.claude/local/claude --version   # debe responder
+```
+
+### Un MCP que instalaste no aparece en el agente
+**Verificá SIEMPRE con `claude mcp list`** — no asumas que quedó registrado. Claude Code lee MCP de
+`.mcp.json` (proyecto), `~/.claude.json` (user) y plugins. Si un instalador lo escribió en otra
+ubicación (ej. `~/.claude/mcp/*.json`), **Claude Code no lo lee** y el MCP queda "caído". Registralo:
+```bash
+claude mcp add <nombre> --scope user -- <comando del server>
+claude mcp list   # confirmá ✓ Connected ; reiniciá la sesión (los MCP cargan al inicio)
+```
+
+### Si probás gentle-ai (en evaluación — todavía NO es toolchain oficial)
+- `gentle-ai install --scope=workspace` deja un sistema SDD (comandos/agentes/skills) en el
+  `.claude/` del proyecto — eso sí lo lee Claude Code, y trae la flota cost-optimizada (explore en
+  sonnet, design en opus).
+- PERO su **Engram (memoria)** lo registra en `~/.claude/mcp/engram.json`, que Claude Code 2.1.x
+  **no lee** → memoria caída. Fix: `claude mcp add engram --scope user -- engram mcp --tools=agent`.
+- Sus sub-agentes hardcodean el namespace `mcp__plugin_engram_engram__*` (forma de plugin de
+  marketplace) que el instalador no crea; con el registro estándar engram queda como `mcp__engram__*`
+  → sirve para el hilo principal, no para los sub-agentes hasta que gentle-ai lo arregle.
+- Gotcha: `engram setup claude-code --help` **ejecuta** el setup igual (no muestra ayuda).
+- Reversible: `gentle-ai uninstall`.
