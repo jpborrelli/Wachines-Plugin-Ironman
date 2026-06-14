@@ -11,8 +11,52 @@ bash <(curl -fsSL https://raw.githubusercontent.com/perennia-regen/wachines-skil
 ```
 
 Esto instala: **gstack** (browse/QA/plan/review/ship), **wachines-skills** (best-practices,
-reviewers, docs), y **gokapso/agent-skills** (WhatsApp/Kapso). Si sos del equipo comercial,
-sumá también **perennia-skills** (ver abajo).
+reviewers, docs), **gokapso/agent-skills** (WhatsApp/Kapso) y registra **Engram** como MCP en
+Claude Code y Codex cuando esos CLIs existen. Si sos del equipo comercial, sumá también
+**perennia-skills** (ver abajo).
+
+Por defecto instala skills para `claude-code` y `codex`. Para limitarlo:
+
+```bash
+WACHINES_AGENTS=codex bash <(curl -fsSL https://raw.githubusercontent.com/perennia-regen/wachines-skills/main/bin/setup-dev.sh)
+```
+
+## Engram cloud — memoria colaborativa del equipo tech
+
+Engram es la memoria fina de código de cada repo. Para colaborar entre devs, el modo recomendado
+es **cloud-first**:
+
+1. El admin del equipo entrega `ENGRAM_CLOUD_SERVER` y `ENGRAM_CLOUD_TOKEN`.
+2. El dev corre el bootstrap con esas variables.
+3. El bootstrap registra el MCP `engram`, importa `.engram/` si el repo trae chunks versionados,
+   enrola los proyectos y ejecuta `engram sync --cloud --project <project>`.
+
+Ejemplo:
+
+```bash
+export ENGRAM_CLOUD_SERVER="https://<engram-cloud-del-equipo>"
+export ENGRAM_CLOUD_TOKEN="<token-del-dev>"
+bash <(curl -fsSL https://raw.githubusercontent.com/perennia-regen/wachines-skills/main/bin/setup-dev.sh)
+```
+
+Proyectos conocidos por el bootstrap:
+
+| Repo | Proyecto Engram |
+|------|-----------------|
+| `~/Documents/BackOffice` | `backoffice` |
+| `~/Documents/reporteGrass` | `reportegrass` |
+| `~/Documents/gestionganadera` | `gestionganadera` |
+
+Verificación:
+
+```bash
+engram cloud status
+engram sync --cloud --project backoffice --status
+codex mcp list | grep engram
+```
+
+Si no hay token cloud, el bootstrap no falla: deja Engram local + MCP. Eso sirve para una máquina,
+pero **no alcanza para colaboración real**.
 
 ## Qué se instala y de dónde
 
@@ -22,6 +66,7 @@ sumá también **perennia-skills** (ver abajo).
 | **wachines-skills** | db-reviewer, docs-architect, frontend-design, *-best-practices, security-reviewer | `npx skills add perennia-regen/wachines-skills` | equipo wachines |
 | **gokapso/agent-skills** | integrate/automate/observe WhatsApp (Kapso) | `npx skills add gokapso/agent-skills` (necesita cuenta Kapso) | upstream (gokapso) |
 | **perennia-skills** (privado) | minuta, prep-reunion, coaching-comercial, html-perennia | `npx skills add perennia-regen/perennia-skills` | equipo Perennia (negocio) |
+| **Engram** | memoria de código por repo + SDD artifacts | `engram mcp --tools=agent` + `engram sync --cloud` | Gentle AI |
 
 ## Manual (si el script falla)
 
@@ -30,14 +75,28 @@ sumá también **perennia-skills** (ver abajo).
 git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack \
   && cd ~/.claude/skills/gstack && ./setup
 
-# 2. skills de desarrollo (wachines) — -g = global (todos los proyectos)
-npx skills add perennia-regen/wachines-skills -g
+# 2. skills de desarrollo core (wachines) — -g = global (todos los proyectos)
+# No instalamos "*" por default: hay nombres compartidos con perennia/upstreams.
+npx skills add perennia-regen/wachines-skills -g -a codex \
+  --skill db-reviewer docs-architect frontend-design next-best-practices security-reviewer tanstack-query-hooks
+npx skills add perennia-regen/wachines-skills -g -a claude-code \
+  --skill db-reviewer docs-architect frontend-design next-best-practices security-reviewer tanstack-query-hooks
 
 # 3. WhatsApp/Kapso (si trabajás con BackOffice)
-npx skills add gokapso/agent-skills -g
+npx skills add gokapso/agent-skills -g -a codex
+npx skills add gokapso/agent-skills -g -a claude-code
 
 # 4. skills comerciales (solo equipo de negocio)
-npx skills add perennia-regen/perennia-skills -g
+npx skills add perennia-regen/perennia-skills -g -a codex
+npx skills add perennia-regen/perennia-skills -g -a claude-code
+
+# 5. Engram MCP para Codex
+codex mcp add engram -- "$(command -v engram)" mcp --tools=agent
+
+# 6. Engram cloud
+engram cloud config --server "$ENGRAM_CLOUD_SERVER"
+engram cloud enroll backoffice
+engram sync --cloud --project backoffice
 ```
 
 ## Scope: global vs proyecto (importante)
@@ -107,14 +166,13 @@ claude mcp add <nombre> --scope user -- <comando del server>
 claude mcp list   # confirmá ✓ Connected ; reiniciá la sesión (los MCP cargan al inicio)
 ```
 
-### Si probás gentle-ai (en evaluación — todavía NO es toolchain oficial)
-- `gentle-ai install --scope=workspace` deja un sistema SDD (comandos/agentes/skills) en el
-  `.claude/` del proyecto — eso sí lo lee Claude Code, y trae la flota cost-optimizada (explore en
-  sonnet, design en opus).
-- PERO su **Engram (memoria)** lo registra en `~/.claude/mcp/engram.json`, que Claude Code 2.1.x
-  **no lee** → memoria caída. Fix: `claude mcp add engram --scope user -- engram mcp --tools=agent`.
-- Sus sub-agentes hardcodean el namespace `mcp__plugin_engram_engram__*` (forma de plugin de
-  marketplace) que el instalador no crea; con el registro estándar engram queda como `mcp__engram__*`
-  → sirve para el hilo principal, no para los sub-agentes hasta que gentle-ai lo arregle.
+### Gentle AI / Engram
+- `gentle-ai install --scope=workspace` deja SDD (comandos/agentes/skills) en `.claude/` del
+  proyecto. Eso es repo-local y compatible con que las skills compartidas vivan afuera.
+- Engram se registra como MCP user-level con `engram mcp --tools=agent`. En Codex:
+  `codex mcp add engram -- "$(command -v engram)" mcp --tools=agent`.
+- Para colaboración entre devs, configurar cloud (`ENGRAM_CLOUD_SERVER` + `ENGRAM_CLOUD_TOKEN`) y
+  correr `engram sync --cloud --project <project>`. El git-sync de `.engram/` queda como respaldo,
+  no como canal principal.
 - Gotcha: `engram setup claude-code --help` **ejecuta** el setup igual (no muestra ayuda).
-- Reversible: `gentle-ai uninstall`.
+- Reversible: `gentle-ai uninstall` para SDD; `codex mcp remove engram` para Codex.

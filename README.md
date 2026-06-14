@@ -9,8 +9,9 @@ Project-agnostic by design — no company-, domain-, or schema-specific content.
 you want, contribute the ones you wish existed.
 
 > **¿Sos del equipo? Empezá por [SETUP.md](SETUP.md)** — instala todo el toolchain dev
-> (gstack + wachines-skills + gokapso) en un comando, y explica la política: las skills se
-> instalan desde repos centralizados, no se editan dentro de cada proyecto.
+> (gstack + wachines-skills + gokapso), registra Engram para Claude Code/Codex y deja listo el
+> camino de Engram cloud. Las skills se instalan desde repos centralizados, no se editan dentro de
+> cada proyecto.
 
 ## Install
 
@@ -19,6 +20,9 @@ Requires Node.js. Install all skills, or pick individual ones:
 ```bash
 # everything
 npx skills add perennia-regen/wachines-skills
+
+# Codex explicit
+npx skills add perennia-regen/wachines-skills -g -a codex
 
 # or a single skill
 npx skills add perennia-regen/wachines-skills/db-reviewer
