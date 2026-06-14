@@ -26,18 +26,22 @@ WACHINES_AGENTS=codex bash <(curl -fsSL https://raw.githubusercontent.com/perenn
 Engram es la memoria fina de código de cada repo. Para colaborar entre devs, el modo recomendado
 es **cloud-first**:
 
-1. El admin del equipo entrega `ENGRAM_CLOUD_SERVER` y `ENGRAM_CLOUD_TOKEN`.
+1. El admin del equipo entrega `ENGRAM_CLOUD_TOKEN`.
 2. El dev corre el bootstrap con esas variables.
 3. El bootstrap registra el MCP `engram`, importa `.engram/` si el repo trae chunks versionados,
-   enrola los proyectos y ejecuta `engram sync --cloud --project <project>`.
+   enrola los proyectos, ejecuta `engram sync --cloud --project <project>` y deja `engram serve`
+   corriendo por launchd en macOS. El token se pasa al entorno de usuario con `launchctl setenv`;
+   no se guarda en el repo.
 
 Ejemplo:
 
 ```bash
-export ENGRAM_CLOUD_SERVER="https://<engram-cloud-del-equipo>"
 export ENGRAM_CLOUD_TOKEN="<token-del-dev>"
 bash <(curl -fsSL https://raw.githubusercontent.com/perennia-regen/wachines-skills/main/bin/setup-dev.sh)
 ```
+
+El server compartido por default es `https://wachines-engram-cloud.fly.dev`. Si necesitás apuntar
+a otro server, seteá también `ENGRAM_CLOUD_SERVER`.
 
 Proyectos conocidos por el bootstrap:
 
@@ -53,6 +57,7 @@ Verificación:
 engram cloud status
 engram sync --cloud --project backoffice --status
 codex mcp list | grep engram
+launchctl print "gui/$(id -u)/dev.engram.serve" | head
 ```
 
 Si no hay token cloud, el bootstrap no falla: deja Engram local + MCP. Eso sirve para una máquina,

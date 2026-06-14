@@ -11,6 +11,7 @@ GSTACK_DIR="$HOME/.claude/skills/gstack"
 AGENTS="${WACHINES_AGENTS:-claude-code codex}"
 DEV_REPOS="${WACHINES_DEV_REPOS:-$HOME/Documents/BackOffice $HOME/Documents/reporteGrass $HOME/Documents/gestionganadera}"
 WACHINES_CORE_SKILLS="${WACHINES_CORE_SKILLS:-db-reviewer docs-architect frontend-design next-best-practices security-reviewer tanstack-query-hooks}"
+DEFAULT_ENGRAM_CLOUD_SERVER="https://wachines-engram-cloud.fly.dev"
 
 agent_label() {
   case "$1" in
@@ -105,12 +106,23 @@ if have engram; then
     warn "Claude Code CLI no está en PATH; salteo registro MCP de Claude."
   fi
 
+  if [ -z "${ENGRAM_CLOUD_SERVER:-}" ] && [ -n "${ENGRAM_CLOUD_TOKEN:-}" ]; then
+    ENGRAM_CLOUD_SERVER="$DEFAULT_ENGRAM_CLOUD_SERVER"
+  fi
+
   if [ -n "${ENGRAM_CLOUD_SERVER:-}" ]; then
     say "Configurando servidor cloud de Engram"
     engram cloud config --server "$ENGRAM_CLOUD_SERVER" || warn "no pude configurar ENGRAM_CLOUD_SERVER"
+    if [ "$(uname -s)" = "Darwin" ]; then
+      launchctl setenv ENGRAM_CLOUD_SERVER "$ENGRAM_CLOUD_SERVER" >/dev/null 2>&1 || true
+    fi
   fi
 
   if [ -n "${ENGRAM_CLOUD_TOKEN:-}" ]; then
+    if [ "$(uname -s)" = "Darwin" ]; then
+      launchctl setenv ENGRAM_CLOUD_TOKEN "$ENGRAM_CLOUD_TOKEN" >/dev/null 2>&1 || true
+    fi
+
     say "Sincronizando proyectos Engram con cloud"
     for repo in $DEV_REPOS; do
       [ -d "$repo/.git" ] || continue
@@ -121,6 +133,38 @@ if have engram; then
       engram cloud enroll "$project" >/dev/null 2>&1 || true
       engram sync --cloud --project "$project" || warn "falló sync cloud de $project"
     done
+
+    if [ "$(uname -s)" = "Darwin" ] && [ -d "$HOME/Library/LaunchAgents" ]; then
+      plist="$HOME/Library/LaunchAgents/dev.engram.serve.plist"
+      say "Configurando Engram autosync con launchd"
+      cat > "$plist" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>dev.engram.serve</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$ENGRAM_BIN</string>
+    <string>serve</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>$HOME/.engram/engram-serve.log</string>
+  <key>StandardErrorPath</key>
+  <string>$HOME/.engram/engram-serve.err.log</string>
+</dict>
+</plist>
+EOF
+      launchctl bootout "gui/$(id -u)" "$plist" >/dev/null 2>&1 || true
+      launchctl bootstrap "gui/$(id -u)" "$plist" >/dev/null 2>&1 || warn "no pude cargar dev.engram.serve"
+      launchctl enable "gui/$(id -u)/dev.engram.serve" >/dev/null 2>&1 || true
+    fi
   else
     warn "ENGRAM_CLOUD_TOKEN no está seteado; Engram queda local/MCP. Para colaborar, configurá cloud y re-ejecutá."
   fi

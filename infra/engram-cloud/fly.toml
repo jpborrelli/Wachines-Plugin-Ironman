@@ -1,0 +1,20 @@
+app = "wachines-engram-cloud"
+primary_region = "sjc"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  ENGRAM_CLOUD_HOST = "0.0.0.0"
+  ENGRAM_PORT = "7437"
+  ENGRAM_CLOUD_ALLOWED_PROJECTS = "backoffice,reportegrass,gestionganadera,wachines-brain-server"
+
+[http_service]
+  internal_port = 7437
+  force_https = true
+  auto_stop_machines = "off"
+  min_machines_running = 1
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
