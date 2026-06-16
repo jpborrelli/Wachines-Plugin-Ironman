@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
 # ============================================================================
-# readiness.sh — Agent Readiness scanner
+# readiness.sh — Agent Readiness fast inventory (OPTIONAL helper)
 #
-# Deterministic layer of the `agent-readiness` skill. Imitates Factory.ai's
-# Agent Readiness framework: how ready is a codebase for autonomous AI agents.
-# 8 pillars, 5 gated levels, binary checks (file existence / config parsing).
-# Multi-language, project-agnostic, zero dependencies (bash + find/grep).
+# Convenience pre-scan for the `agent-readiness` skill. Imitates Factory.ai's
+# Agent Readiness framework structure (8 pillars, 5 gated levels) with binary
+# file/config checks. Multi-language, project-agnostic, zero dependencies.
 #
 # Usage:   bash readiness.sh <path-to-repo>      # defaults to "."
 #
-# Level rule: you reach level L if you pass >=80% of L's checks AND every lower
-# level's. Production target: Level 3 (Standardized).
-#
-# This is the OBJECTIVE baseline. Presence != quality — pair it with the
-# qualitative review described in SKILL.md.
+# IMPORTANT: this is a STARTING SIGNAL, not the score. It only detects
+# *presence* (a linter config exists), never *quality* (it is wired in and
+# runs). The real assessment is the per-pillar subagent investigation +
+# cross-referencing described in SKILL.md. Use this output to give the
+# subagents a head start, then let their judgment decide the verdict.
 # ============================================================================
 set -uo pipefail
 
