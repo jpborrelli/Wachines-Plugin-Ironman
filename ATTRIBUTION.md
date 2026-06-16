@@ -23,6 +23,7 @@ licenses are preserved below and in each skill's frontmatter.
 | `security-reviewer` (skill + agent) | perennia-regen | MIT |
 | `tanstack-query-hooks` (skill) | perennia-regen | MIT |
 | `html-perennia` (skill) | perennia-regen | MIT |
+| `agent-readiness` (skill) | perennia-regen | MIT — methodology © [Factory.ai](https://factory.ai/news/agent-readiness) (Agent Readiness), credited in-skill; scanner is original |
 
 Most were generalized from internal tools — references to private domains, table names, people,
 and infrastructure were removed so they are reusable in any project. `html-perennia` is the one
