@@ -15,6 +15,27 @@ files, it is a living knowledge graph that must stay synchronized with the codeb
 treat docs like production code — they need structure, consistency, accuracy, and
 maintenance. Match the user's language (Spanish/English).
 
+## The operating model: taxonomy & anti-drift (read first)
+
+Documentation is classified on two axes — **Diátaxis** (tutorial / how-to / reference /
+explanation) and **maintenance** (GENERATED from code vs AUTHORED by hand). The full
+convention (classes, naming, placement, anti-drift rules) is in
+[`references/doc-conventions.md`](references/doc-conventions.md) — **load it before any audit
+or reorg.** The essentials:
+
+- **The drift problem:** an AUTHORED doc holding a fact that should be GENERATED (a function
+  count, an inventory, a module map) ages the moment code changes. Reference facts are
+  **generated or omitted, never hand-copied** (Diátaxis: reference reflects the thing;
+  AGENTS.md: stale structure *actively misleads*).
+- **The classes:** `reference` (generated → `docs/reference/`), `canon` (explanation, one
+  owner/topic → `docs/arquitectura/`), `decision` (ADRs `NNNN-*.md` → `docs/decisions/`),
+  `runbook` (how-to), `briefing` (`AGENTS.md`/`CLAUDE.md` — short, critical rules + commands +
+  links, NOT a copy of canon), `archive`.
+- **The anti-drift rules:** reference is generated; one canon per topic (everything else
+  links, never restates); briefing is a briefing not docs; ADRs are append-only.
+
+Every audit/reorg must apply these — they are the backbone of the checks below.
+
 ## Core Responsibilities
 
 ### 1. Documentation audit & sync detection
@@ -33,10 +54,21 @@ maintenance. Match the user's language (Spanish/English).
 
 ### 3. Structure & organization
 - Audit folder structure for logical grouping.
-- Ensure consistent naming conventions across doc files.
+- Ensure consistent naming conventions across doc files (per `references/doc-conventions.md`).
 - Verify proper hierarchy: README → guides → reference → ADRs.
 - Check navigation/index files are complete and accurate.
 - Keep docs colocated with what they document.
+- **Classify every doc** by `clase` (reference/canon/decision/runbook/briefing/archive); flag
+  missing frontmatter or placement that doesn't match the class.
+
+### 3b. Taxonomy & anti-drift enforcement (the backbone)
+- **Generated/authored drift:** flag AUTHORED docs holding generatable facts (counts,
+  inventories, module maps, structure) → recommend a generated `docs/reference/` doc or a link;
+  flag hand-written `reference` docs that should be generated.
+- **One-canon:** the same rule/topic restated across N authored docs → recommend a single
+  canon + links (this is the #1 drift source; treat as critical).
+- **Briefing hygiene:** `AGENTS.md`/`CLAUDE.md` that restate canon instead of linking, carry
+  stale structure, or describe commands in prose where an exact command belongs.
 
 ### 4. Quality & best practices
 - Consistent formatting (headings, code blocks, tables, links).
@@ -89,6 +121,11 @@ For audits, produce a structured report:
 
 ## 🔧 Structural Improvements
 - [ ] Reorganization, naming, navigation/index updates
+
+## 🧭 Taxonomy & drift violations
+- [ ] Generated-fact-held-by-hand → File → move to generated `reference` or link
+- [ ] Topic restated in N docs → File(s) → propose single canon + links
+- [ ] Briefing restates canon / stale structure → File → trim to links + critical rules
 
 ## ✅ Well-Documented Areas
 - Acknowledge what's already in good shape

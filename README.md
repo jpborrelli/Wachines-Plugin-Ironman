@@ -45,7 +45,7 @@ have with `npx skills list`; search with `npx skills find <query>`.
 | [`tanstack-query-hooks`](skills/tanstack-query-hooks) | Generates TanStack Query hooks: query/mutation hooks, automatic cache invalidation, loading/error states | perennia-regen · MIT |
 | [`db-reviewer`](skills/db-reviewer) | Reviews SQL migrations: naming, soft delete, `COMMENT ON`, `SECURITY DEFINER`, RLS, performance | perennia-regen · MIT |
 | [`security-reviewer`](skills/security-reviewer) | Reviews code for OWASP Top 10: injection, XSS, broken auth, secrets, insecure data (+ Supabase checks) | perennia-regen · MIT |
-| [`docs-architect`](skills/docs-architect) | Audits/creates/reorganizes docs; detects drift between docs and code; parallel sub-agent audits | perennia-regen · MIT |
+| [`docs-architect`](skills/docs-architect) | Audits/creates/reorganizes docs; detects drift between docs and code; enforces a Diátaxis+ADR taxonomy and generated-vs-authored anti-drift rules ([doc-conventions](skills/docs-architect/references/doc-conventions.md)); parallel sub-agent audits | perennia-regen · MIT |
 | [`rpc-api-contract`](skills/rpc-api-contract) | Standard for exposing business logic as a uniform agent-operable API: `api` schema, `{data,effects,warnings}` envelope, RFC 7807 errors, Idempotency-Key, SECURITY DEFINER, preview/confirm | perennia-regen · MIT |
 
 `db-reviewer`, `docs-architect` and `security-reviewer` are also provided as **subagents** in
