@@ -12,9 +12,9 @@ license: MIT
 Generás la parte **GENERATED** de la documentación de un repo: las secciones mecánicas
 (conteos, inventarios, mapa de directorios) que un humano nunca mantiene al día y que envejecen
 apenas cambia el código. La computás del código con un generador **determinístico y
-zero-dependency**, y la cableás a CI para que un check en PR falle si quedó desactualizada —
-igual que un lint. **Lee primero [`references/taxonomy.md`](references/taxonomy.md)** (el
-estándar AutoWiki + el eje GENERATED/AUTHORED).
+zero-dependency**, y la **regenerás al mergear** (push a la branch de integración) — los PRs NO
+la llevan. **Lee primero [`references/taxonomy.md`](references/taxonomy.md)** (el estándar
+AutoWiki + el eje GENERATED/AUTHORED).
 
 > **Par con `docs-architect`:** esta skill **genera** lo GENERATED (`docs/reference/`).
 > `docs-architect` **audita** lo AUTHORED (el *por qué*: arquitectura, ADRs). No se pisan.
@@ -28,6 +28,12 @@ estándar AutoWiki + el eje GENERATED/AUTHORED).
   lo toca.
 - El generador (`assets/gen-docs.mjs`) enumera archivos vía **`git ls-files`** → **CI y local
   dan idéntico resultado** sin importar cruft local. Salida sin fechas/SHAs → determinística.
+- **Regenerar al MERGEAR, no por PR.** `docs/reference/by-the-numbers.md` y `repo-map.md`
+  dependen del **árbol entero** (LOC, # archivos por carpeta) → si cada PR los commitea y los
+  chequea, **dos PRs cualesquiera que agreguen/saquen un archivo se pisan** (conflicto + check
+  stale). Por eso el workflow NO es un check de PR: corre en **`push` a la branch de
+  integración** y **auto-commitea** `docs/reference` con `[skip ci]`. Los PRs no tocan
+  `docs/reference`; se refresca solo al mergear. Cero conflictos cruzados.
 
 ## Cómo instalar la skill en un repo (procedimiento)
 
@@ -39,21 +45,21 @@ config. Pasos:
    rutas, los tipos autogenerados grandes (para excluir del LOC). Que produzca un
    **`docs-gen.config.json`** (esquema abajo). Verificá que cada `root` del config EXISTA.
 2. **Copiar el generador:** `assets/gen-docs.mjs` → `scripts/gen-docs.mjs`.
-3. **Copiar el workflow:** `assets/docs-generate.yml` → `.github/workflows/docs-generate.yml`.
-   Si el repo NO tiene `package.json` root, ajustá el mensaje de error a
-   `node scripts/gen-docs.mjs` (en vez de `npm run docs:gen`).
+3. **Copiar el workflow:** `assets/docs-generate.yml` → `.github/workflows/docs-generate.yml`,
+   y reemplazá `__INTEGRATION_BRANCH__` por la branch donde aterrizan los features (main /
+   staging / preview según el repo). Corre en `push` a esa branch y auto-commitea.
 4. **Script de conveniencia:** agregá `"docs:gen": "node scripts/gen-docs.mjs"` al
-   `package.json` root (si existe).
-5. **Generar y verificar determinismo:** corré `node scripts/gen-docs.mjs` dos veces y confirmá
-   que la 2da corrida NO produce diff (`diff -r`). Si hay diff, el generador no es
-   determinístico — revisá (causa típica: contar archivos no trackeados → ya resuelto vía
-   `git ls-files`; o incluir la propia salida → ya se excluye el `outDir`).
+   `package.json` root (si existe) — para regenerar a mano cuando quieras.
+5. **Generar una vez y verificar determinismo:** corré `node scripts/gen-docs.mjs` dos veces y
+   confirmá que la 2da corrida NO produce diff (`diff -r`). Commiteá ese `docs/reference` inicial.
+   Si hay diff, el generador no es determinístico — revisá (causa típica: contar archivos no
+   trackeados → ya resuelto vía `git ls-files`; o incluir la propia salida → ya se excluye `outDir`).
 6. **Documentar (DX):** una nota breve en `CLAUDE.md`/`AGENTS.md`: "`docs/reference/` es
-   GENERADO, no editar a mano, regenerar con `npm run docs:gen`; el resto de `docs/` es
-   AUTHORED; auditar con `docs-architect`".
-7. **Pre-push (opcional):** si el repo usa husky/lefthook, agregá un hook que regenere y
-   bloquee si quedó stale (regenera los archivos en el working tree → el dev solo commitea).
-8. **PR.** Commiteá solo tus archivos. El check `docs-generate` debe pasar en verde.
+   GENERADO, **no editar a mano, NO regenerarlo en tu PR** — se refresca solo al mergear; el
+   resto de `docs/` es AUTHORED; auditar con `docs-architect`".
+7. **NO agregues gate por PR ni pre-push** que regenere/bloquee — eso es lo que hace que dos
+   PRs se pisen. El refresh vive solo en el workflow de `push`.
+8. **PR.** Commiteá solo tus archivos (sin `docs/reference`, salvo el commit inicial de install).
 
 ## El config por repo (`docs-gen.config.json`)
 
@@ -93,8 +99,9 @@ overlay a mano del envelope/errores.
 
 ## Refrescar
 
-`npm run docs:gen` (o `node scripts/gen-docs.mjs`). El CI lo fuerza: si tocaste código y no
-regeneraste, el check en PR falla con instrucciones.
+**Automático al mergear:** el workflow de `push` regenera y auto-commitea `docs/reference` en la
+branch de integración. No tenés que hacer nada en tu PR. Para verlo localmente cuando quieras:
+`npm run docs:gen` (o `node scripts/gen-docs.mjs`) — pero **no lo commitees en el PR**.
 
 ## Cuándo NO usar
 

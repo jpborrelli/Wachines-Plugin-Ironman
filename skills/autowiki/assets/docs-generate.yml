@@ -1,22 +1,23 @@
-name: docs-generate (check)
+name: docs-generate (refresh on merge)
 
-# Check-en-PR: regenera las páginas de referencia y falla si quedaron
-# desactualizadas. NO commitea (sin bot commits). El dev corre `npm run docs:gen`
-# y commitea. Solo corre cuando cambió código, el generador o su config.
+# Regenera docs/reference (GENERADO) al pushear a la branch de integración y
+# commitea si cambió. NO es un check de PR: por eso dos PRs nunca se pisan por
+# los conteos del generador. Los PRs ya NO llevan docs/reference — se refresca
+# solo, al mergear. El commit lleva [skip ci] para no disparar otros workflows.
 
 on:
-  pull_request:
-    paths:
-      - '**/*.ts'
-      - '**/*.tsx'
-      - '**/*.js'
-      - '**/*.jsx'
-      - '**/*.sql'
-      - 'docs-gen.config.json'
-      - 'scripts/gen-docs.mjs'
+  push:
+    branches: ['__INTEGRATION_BRANCH__']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docs-generate-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  check:
+  refresh:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,12 +26,14 @@ jobs:
           node-version: '20'
       - name: Regenerar docs/reference
         run: node scripts/gen-docs.mjs
-      - name: Verificar que docs/reference está al día
+      - name: Commitear si cambió
         run: |
-          if ! git diff --quiet -- docs/reference; then
-            echo "::error::docs/reference quedó desactualizado respecto al código."
-            echo "Corré 'npm run docs:gen' localmente y commiteá los cambios."
-            git diff --stat -- docs/reference
-            exit 1
+          if git diff --quiet -- docs/reference; then
+            echo "docs/reference ya al día."
+            exit 0
           fi
-          echo "✓ docs/reference al día"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/reference
+          git commit -m "docs: regenerar docs/reference [skip ci]"
+          git push
