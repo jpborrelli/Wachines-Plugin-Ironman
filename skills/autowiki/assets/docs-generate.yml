@@ -1,0 +1,36 @@
+name: docs-generate (check)
+
+# Check-en-PR: regenera las páginas de referencia y falla si quedaron
+# desactualizadas. NO commitea (sin bot commits). El dev corre `npm run docs:gen`
+# y commitea. Solo corre cuando cambió código, el generador o su config.
+
+on:
+  pull_request:
+    paths:
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.js'
+      - '**/*.jsx'
+      - '**/*.sql'
+      - 'docs-gen.config.json'
+      - 'scripts/gen-docs.mjs'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Regenerar docs/reference
+        run: node scripts/gen-docs.mjs
+      - name: Verificar que docs/reference está al día
+        run: |
+          if ! git diff --quiet -- docs/reference; then
+            echo "::error::docs/reference quedó desactualizado respecto al código."
+            echo "Corré 'npm run docs:gen' localmente y commiteá los cambios."
+            git diff --stat -- docs/reference
+            exit 1
+          fi
+          echo "✓ docs/reference al día"

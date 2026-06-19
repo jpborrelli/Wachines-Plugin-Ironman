@@ -1,0 +1,29 @@
+{
+  "project": "Nombre legible del repo",
+  "outDir": "docs/reference",
+  "exclude": ["node_modules", "dist", "build", "coverage", ".next", ".turbo", "supabase/.branches", "playwright-report", "test-results"],
+  "loc": {
+    "exts": [".ts", ".tsx", ".js", ".jsx", ".sql", ".css"],
+    "excludeFiles": ["supabase/types/database.types.ts"]
+  },
+  "byTheNumbers": [
+    { "label": "Archivos TypeScript/TSX", "type": "ext", "exts": [".ts", ".tsx"] },
+    { "label": "Componentes React (.tsx)", "type": "ext", "exts": [".tsx"] },
+    { "label": "Archivos SQL", "type": "ext", "exts": [".sql"] },
+    { "label": "Tests", "type": "name-suffix", "suffixes": [".test.ts", ".test.tsx", ".spec.ts"] },
+    { "label": "Docs Markdown", "type": "ext", "exts": [".md"] }
+  ],
+  "inventories": [
+    { "title": "Funciones Postgres", "type": "grep", "roots": ["supabase", "database"], "ext": ".sql", "pattern": "create\\s+(or\\s+replace\\s+)?function" },
+    { "title": "Migraciones", "type": "files", "root": "supabase/migrations", "ext": ".sql" },
+    { "title": "Edge Functions", "type": "dirs", "root": "supabase/functions" },
+    { "title": "API routes (Next.js)", "type": "files", "root": "src/app", "ext": ".ts", "limit": 100 }
+  ],
+  "repoMap": {
+    "describe": {
+      "src": "Código de la app",
+      "supabase": "Migraciones, edge functions, tipos",
+      "docs": "Documentación (canon + reference + decisions)"
+    }
+  }
+}
