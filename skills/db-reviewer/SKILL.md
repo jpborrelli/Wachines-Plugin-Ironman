@@ -53,11 +53,23 @@ out deleted rows. Detect the soft-delete column per table — conventions vary:
 Build the list of soft-deleted tables from the schema (grep for the column), don't hardcode
 blindly. Watch for **inconsistent column naming across tables** — that's a common trap.
 
-### 3. COMMENT ON
-- Every new table → `COMMENT ON TABLE`.
-- Every new column → `COMMENT ON COLUMN`.
-- Every new function → `COMMENT ON FUNCTION`.
-- Comments must explain **what it is for**, not just restate the name.
+### 3. COMMENT ON (gate de schema auto-descriptivo / RAG-ready)
+
+El COMMENT es la **fuente de verdad de la semántica**: lo lee `pg_catalog`, PostgREST lo vuelve la `description` del OpenAPI, y el catálogo de RPCs/columnas se genera de ahí. Una columna sin COMMENT obliga a agentes (y humanos) a adivinar. Por eso es un **gate**, no un nice-to-have.
+
+**Forward-only (bloquea lo nuevo):**
+- Cada **tabla nueva** → `COMMENT ON TABLE`.
+- Cada **columna nueva** → `COMMENT ON COLUMN`.
+- Cada **función nueva** → `COMMENT ON FUNCTION`.
+- Los comentarios explican **para qué sirve**, no repiten el nombre. Para enums, listar el significado de cada valor (evita drift tipo `tipo_educador`).
+
+**Regla boy-scout — "arreglá la casa mientras la construís" (idea de Emi):**
+- Cuando una migración **altera** una tabla existente (ADD/RENAME/ALTER COLUMN, nuevos índices, cambio de lógica), **aprovechá y completá el COMMENT de TODAS las columnas de esa tabla**, no solo las nuevas. Si la tabla tiene columnas viejas sin comentar, este es el momento.
+- Cuando una migración **toca una función** (`CREATE OR REPLACE`), exigí su `COMMENT ON FUNCTION` aunque ya existiera sin comentar.
+- Objetivo: el backfill de los ~miles de columnas sin comentar ocurre **orgánicamente sobre lo que más se edita**, sin un proyecto-mamut aparte. Cada PR de schema deja su zona mejor de como la encontró.
+- Como reviewer: si ves un ALTER sobre una tabla con columnas sin comentar, **marcalo y pedí completarlas en el mismo PR** (o proponé los COMMENT vos, para validación del autor — no inventes semántica que no se deduzca del código/uso).
+
+> Contexto: el baseline de cobertura está en el benchmark RAG-readiness (tablas ~80-93%, columnas ~17-30%). El gate forward-only + esta regla boy-scout son cómo se cierra sin reescribir todo a mano.
 
 ### 4. SECURITY DEFINER
 - Any function created with `SECURITY DEFINER` **must** also `SET search_path = public`
