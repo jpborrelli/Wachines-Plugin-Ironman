@@ -69,6 +69,9 @@ if have npx; then
     say "Instalando gokapso/agent-skills (WhatsApp/Kapso) para $(agent_label "$agent") — global"
     npx -y skills add gokapso/agent-skills -g -a "$agent" || warn "falló gokapso para $agent (¿necesita auth?)"
 
+    say "Instalando vercel/chat (Chat SDK multi-plataforma) para $(agent_label "$agent") — global"
+    npx -y skills add vercel/chat -g -a "$agent" || warn "falló vercel/chat para $agent"
+
     if [ "${PERENNIA_BIZ:-}" = "1" ]; then
       say "Instalando perennia-skills (negocio) para $(agent_label "$agent") — privado, global"
       npx -y skills add perennia-regen/perennia-skills -g -a "$agent" || warn "falló perennia-skills para $agent (¿auth gh?)"

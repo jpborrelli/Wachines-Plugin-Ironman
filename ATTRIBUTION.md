@@ -55,3 +55,11 @@ in [gokapso/agent-skills](https://github.com/gokapso/agent-skills) and are **not
 here. They require a Kapso account + API key and are maintained upstream — install them from
 the source with `npx skills add gokapso/agent-skills`. (No license is declared on that repo,
 which is an additional reason not to redistribute it.)
+
+### Chat SDK (Vercel)
+
+Vercel's Chat SDK skill (`chat-sdk`) lives in [vercel/chat](https://github.com/vercel/chat)
+(MIT). It is **not** vendored here: the skill is a thin pointer to docs and resources that ship
+inside the `chat` npm package (`node_modules/chat/…`), so copying only the `SKILL.md` would
+leave a skill whose references don't resolve. Install it from the source with
+`npx skills add vercel/chat` — maintained upstream, stays in sync with the package.

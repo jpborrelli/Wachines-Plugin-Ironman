@@ -70,6 +70,7 @@ pero **no alcanza para colaboración real**.
 | **gstack** | browse, qa, plan-*, review, ship, investigate, cso, design-* (~53) | `git clone … ~/.claude/skills/gstack && ./setup` (necesita [Bun](https://bun.sh) v1+) | upstream (garrytan/gstack) |
 | **wachines-skills** | db-reviewer, docs-architect, frontend-design, *-best-practices, security-reviewer | `npx skills add perennia-regen/wachines-skills` | equipo wachines |
 | **gokapso/agent-skills** | integrate/automate/observe WhatsApp (Kapso) | `npx skills add gokapso/agent-skills` (necesita cuenta Kapso) | upstream (gokapso) |
+| **vercel/chat** | Chat SDK: bots multi-plataforma (Slack/WhatsApp/Discord/…) sobre AI SDK | `npx skills add vercel/chat` | upstream (Vercel) |
 | **perennia-skills** (privado) | minuta, prep-reunion, coaching-comercial, html-perennia | `npx skills add perennia-regen/perennia-skills` | equipo Perennia (negocio) |
 | **Engram** | memoria de código por repo + SDD artifacts | `engram mcp --tools=agent` + `engram sync --cloud` | Gentle AI |
 
@@ -90,6 +91,10 @@ npx skills add perennia-regen/wachines-skills -g -a claude-code \
 # 3. WhatsApp/Kapso (si trabajás con BackOffice)
 npx skills add gokapso/agent-skills -g -a codex
 npx skills add gokapso/agent-skills -g -a claude-code
+
+# 3b. Chat SDK (bots multi-plataforma sobre AI SDK — referencia para el agente de WhatsApp)
+npx skills add vercel/chat -g -a codex
+npx skills add vercel/chat -g -a claude-code
 
 # 4. skills comerciales (solo equipo de negocio)
 npx skills add perennia-regen/perennia-skills -g -a codex

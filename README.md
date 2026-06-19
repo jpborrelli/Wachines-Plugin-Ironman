@@ -113,6 +113,17 @@ flows), `automate-whatsapp` (workflows, agents, functions, databases), and `obse
 (debug delivery, inspect webhooks, triage errors, health checks). There's also a CLI —
 `kapso login` / `kapso status` — see the [Kapso CLI docs](https://docs.kapso.ai/docs/whatsapp/cli).
 
+## Chat SDK — multi-platform bots, referenced not bundled
+
+Vercel's [Chat SDK](https://chat-sdk.dev) ships a skill for building bots across Slack, Teams,
+Discord, Telegram, WhatsApp, and more on top of the AI SDK. Like the Kapso skills, it's a thin
+pointer to docs that live inside the `chat` npm package, so it's installed from the source
+(MIT, maintained upstream) rather than vendored here:
+
+```bash
+npx skills add vercel/chat
+```
+
 ## Contributing
 
 Open a branch and propose a skill via PR — see [CONTRIBUTING.md](CONTRIBUTING.md). The bar:
