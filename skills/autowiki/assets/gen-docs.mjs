@@ -116,6 +116,56 @@ function buildInventory(inv) {
     }
     return { count: total, fileHits, scanned: scope.length };
   }
+  if (inv.type === 'routes') {
+    // Rutas reales de Next.js App Router (route.ts → URL), no el basename.
+    const root = norm(inv.root);
+    const items = [];
+    for (const f of files) {
+      const base = f.split(sep).pop();
+      if (!/^route\.(ts|tsx|js|jsx)$/.test(base)) continue;
+      if (!(f === root || f.startsWith(root + sep))) continue;
+      const relDir = f.slice(root.length + 1).split(sep).slice(0, -1);
+      if (relDir.some((s) => s.startsWith('_'))) continue;                              // carpetas privadas
+      const segs = relDir.filter((s) => !(s.startsWith('(') && s.endsWith(')')));        // route groups no rutean
+      const path = '/' + segs.join('/');
+      const src = readFileSync(join(ROOT, f), 'utf8');
+      const methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']
+        .filter((mth) => new RegExp(`export\\s+(?:async\\s+function|const)\\s+${mth}\\b`).test(src));
+      items.push(`\`${path}\`${methods.length ? ' — ' + methods.join(', ') : ''}`);
+    }
+    return { count: items.length, items: items.sort() };
+  }
+  if (inv.type === 'functions') {
+    // Funciones SQL DISTINTAS (no ocurrencias DDL) + su COMMENT ON FUNCTION.
+    // Filtro opcional por schema (ej. "api") → catálogo de RPCs para agentes.
+    // Las FIRMAS/params NO se documentan acá: viven en el OpenAPI vivo de PostgREST.
+    const scope = files.filter((f) => (inv.roots || []).some((r) => underRoot(f, r)) && extname(f).toLowerCase() === '.sql');
+    const defRe = /create\s+(?:or\s+replace\s+)?function\s+(?:"?([a-z0-9_]+)"?\.)?"?([a-z0-9_]+)"?\s*\(/gi;
+    const comRe = /comment\s+on\s+function\s+(?:"?([a-z0-9_]+)"?\.)?"?([a-z0-9_]+)"?\s*\([^;]*?\)\s+is\s+(?:\$([a-z0-9_]*)\$([\s\S]*?)\$\3\$|'((?:[^']|'')*)')/gi;
+    const names = new Set();
+    const comments = new Map();
+    for (const f of scope) {
+      const s = readFileSync(join(ROOT, f), 'utf8');
+      let m;
+      while ((m = defRe.exec(s))) {
+        const sch = m[1] || null, nm = m[2];
+        if (inv.schema && sch !== inv.schema) continue;
+        if (!inv.schema && sch === 'pg_catalog') continue;
+        names.add((sch ? sch + '.' : '') + nm);
+      }
+      let c;
+      while ((c = comRe.exec(s))) {
+        const sch = c[1] || null, nm = c[2];
+        const txt = (c[4] ?? c[5] ?? '').replace(/''/g, "'").trim().split('\n')[0].slice(0, 160);
+        if (txt) { comments.set((sch ? sch + '.' : '') + nm, txt); comments.set(nm, txt); }
+      }
+    }
+    const items = [...names].sort().map((k) => {
+      const com = comments.get(k) || comments.get(k.includes('.') ? k.split('.').pop() : k);
+      return `\`${k}\`${com ? ' — ' + com : ''}`;
+    });
+    return { count: items.length, items };
+  }
   return { count: 0, items: [] };
 }
 
@@ -127,10 +177,15 @@ for (const inv of cfg.inventories || []) {
   if (inv.type === 'grep') {
     invDoc += `**${fmt(r.count)}** coincidencias en ${fmt(r.fileHits)} de ${fmt(r.scanned)} archivos escaneados.\n\n`;
   } else {
-    invDoc += `**${fmt(r.count)}** ${inv.type === 'dirs' ? 'directorios' : 'archivos'}.\n\n`;
+    const label = inv.type === 'dirs' ? 'directorios'
+      : inv.type === 'routes' ? 'rutas'
+      : inv.type === 'functions' ? 'funciones (únicas)'
+      : 'archivos';
+    invDoc += `**${fmt(r.count)}** ${label}.\n\n`;
+    const raw = inv.type === 'routes' || inv.type === 'functions'; // items ya vienen formateados
     const cap = inv.limit ?? 200;
     const shown = r.items.slice(0, cap);
-    if (shown.length) invDoc += shown.map((i) => `- \`${i}\``).join('\n') + '\n';
+    if (shown.length) invDoc += shown.map((i) => (raw ? `- ${i}` : `- \`${i}\``)).join('\n') + '\n';
     if (r.items.length > cap) invDoc += `\n_… +${fmt(r.items.length - cap)} más._\n`;
     invDoc += '\n';
   }

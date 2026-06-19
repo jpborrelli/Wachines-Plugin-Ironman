@@ -66,11 +66,30 @@ Ver [`assets/docs-gen.config.example.json`](assets/docs-gen.config.example.json)
 - `byTheNumbers[]` — métricas: `{type:"ext",exts}` · `{type:"name-suffix",suffixes}` ·
   `{type:"filename",name}`. **Evitá `filename:"index.ts"`** como proxy de edge functions
   (cuenta barrels) — usá el inventario `dirs`.
-- `inventories[]` — `{type:"files",root,ext?,limit?}` · `{type:"dirs",root}` ·
-  `{type:"grep",roots[],ext?,pattern}`. Funciones Postgres:
-  `pattern:"create\\s+(or\\s+replace\\s+)?function"` (cuenta ocurrencias DDL, no funciones
-  únicas — etiquetalo honesto).
+- `inventories[]` — tipos:
+  - `{type:"files",root,ext?,limit?}` — lista archivos (ej. migraciones).
+  - `{type:"dirs",root}` — subdirectorios (ej. edge functions).
+  - `{type:"grep",roots[],ext?,pattern}` — cuenta coincidencias regex. Para funciones:
+    `pattern:"create\\s+(or\\s+replace\\s+)?function"` cuenta **ocurrencias DDL, NO funciones
+    únicas** — etiquetalo honesto (o mejor usá `functions`, abajo).
+  - `{type:"routes",root,limit?}` — **rutas reales de Next.js App Router**: por cada `route.ts`
+    emite la URL (`/api/...`) + métodos HTTP detectados, no el basename repetido. `root` = la
+    carpeta `app` (ej. `web/src/app`, `grass-dashboard/src/app`).
+  - `{type:"functions",roots[],schema?,limit?}` — funciones SQL **distintas** + su
+    `COMMENT ON FUNCTION`. Con `schema:"api"` → **catálogo de RPCs agent-operables**. Las
+    **firmas/params NO van acá**: viven en el OpenAPI vivo de PostgREST (ver abajo) — una sola
+    fuente, anti-drift.
 - `repoMap.describe` — `{dir: "descripción"}` de los directorios top-level reales.
+
+## API agent-operable: el catálogo estático complementa al OpenAPI vivo
+
+Si el repo expone RPCs en un schema (ej. `api`) vía **PostgREST** (Data API de Supabase), ese
+schema **autogenera un OpenAPI** (cada `COMMENT ON FUNCTION` → `description`). Esa es la
+**referencia viva con firmas/params** (renderizable con Scalar/Redoc/Swagger UI o Mintlify).
+Por eso el inventory `functions schema:"api"` solo lista **nombre + COMMENT** (índice grep-able)
+y deja las firmas al OpenAPI. Caveat de PostgREST: no documenta argumentos de función (no se
+puede `COMMENT ON` los args) → para params, tabla dentro del COMMENT, `postgrest-openapi`, o un
+overlay a mano del envelope/errores.
 
 ## Refrescar
 

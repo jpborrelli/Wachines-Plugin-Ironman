@@ -17,7 +17,8 @@
     { "title": "Funciones Postgres", "type": "grep", "roots": ["supabase", "database"], "ext": ".sql", "pattern": "create\\s+(or\\s+replace\\s+)?function" },
     { "title": "Migraciones", "type": "files", "root": "supabase/migrations", "ext": ".sql" },
     { "title": "Edge Functions", "type": "dirs", "root": "supabase/functions" },
-    { "title": "API routes (Next.js)", "type": "files", "root": "src/app", "ext": ".ts", "limit": 100 }
+    { "title": "API routes (Next.js App Router)", "type": "routes", "root": "src/app", "limit": 150 },
+    { "title": "RPCs api.* (superficie agent-operable — firmas en el OpenAPI de PostgREST)", "type": "functions", "roots": ["supabase/migrations", "supabase/domains"], "schema": "api" }
   ],
   "repoMap": {
     "describe": {
