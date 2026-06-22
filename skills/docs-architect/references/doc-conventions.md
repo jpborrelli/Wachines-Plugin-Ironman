@@ -18,6 +18,7 @@ The operating model for agent-ready documentation. Grounded in public standards,
 |---|---|---|---|---|---|
 | **reference** | Reference | **GENERADA** (push) | `docs/reference/` | `<topic>.md` + banner | inventario API/RPC, mapa de módulos, conteos, schema |
 | **canon** | Explanation | AUTORADA · 1 dueño/tema | `docs/arquitectura/` | `<topic>.md` | el contrato (el *porqué*), DONDE_VA_LA_LOGICA |
+| **extraction-contract** | Explanation | AUTORADA · changelog rastrea schema del código | `docs/arquitectura/` | `<topic>.md` | ledger de OCR/parsers: `OCR_EDGE_FUNCTIONS.md` |
 | **decision** | (decision log) | AUTORADA · append-only | `docs/decisions/` | `NNNN-kebab-title.md` | hipótesis A–G, decisiones tomadas |
 | **runbook** | How-to | AUTORADA | `docs/runbooks/` | `<verbo>-<sustantivo>.md` | procedimientos operativos |
 | **briefing** | — | AUTORADA · corta | `AGENTS.md` / `CLAUDE.md` (raíz) | — | reglas críticas + comandos + links |
@@ -37,6 +38,7 @@ The operating model for agent-ready documentation. Grounded in public standards,
 3. **Un solo canon por tema.** Lo demás LINKEA, nunca re-enuncia. Duplicación = drift garantizado.
 4. **Decisiones = ADRs append-only.** No reescribir la historia; superseder.
 5. **Colocación.** El doc vive cerca de lo que documenta; la referencia se genera del código.
+6. **Contrato de extracción (OCR/parsers).** Un `canon` cuyo changelog rastrea un schema derivado del código (el `JSON_SCHEMA` de un OCR/parser) tiene una superficie de drift *triple* — schema (código) ↔ columnas destino (DB) ↔ changelog (doc) — que ningún otro doc tiene. Auditarla es su propia dimensión: ver [`extraction-contract-docs.md`](extraction-contract-docs.md).
 
 ## Cómo docs-architect lo hace cumplir (checks)
 

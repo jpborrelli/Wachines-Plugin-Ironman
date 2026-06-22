@@ -3,7 +3,7 @@ name: docs-architect
 description: Audit, create, update, reorganize, or improve documentation in a repository. Detects stale docs out of sync with code, finds undocumented features/APIs, restructures doc folders, fixes broken links, and runs comprehensive documentation reviews. Use when asked to review the docs, document a feature, check if docs are up to date, or reorganize documentation.
 metadata:
   author: perennia-regen
-  version: "1.0.0"
+  version: "1.1.0"
 license: MIT
 ---
 
@@ -28,9 +28,10 @@ or reorg.** The essentials:
   **generated or omitted, never hand-copied** (Diátaxis: reference reflects the thing;
   AGENTS.md: stale structure *actively misleads*).
 - **The classes:** `reference` (generated → `docs/reference/`), `canon` (explanation, one
-  owner/topic → `docs/arquitectura/`), `decision` (ADRs `NNNN-*.md` → `docs/decisions/`),
-  `runbook` (how-to), `briefing` (`AGENTS.md`/`CLAUDE.md` — short, critical rules + commands +
-  links, NOT a copy of canon), `archive`.
+  owner/topic → `docs/arquitectura/`), `extraction-contract` (a canon whose changelog tracks a
+  code-derived schema — OCR/parser ledgers; see below), `decision` (ADRs `NNNN-*.md` →
+  `docs/decisions/`), `runbook` (how-to), `briefing` (`AGENTS.md`/`CLAUDE.md` — short, critical
+  rules + commands + links, NOT a copy of canon), `archive`.
 - **The anti-drift rules:** reference is generated; one canon per topic (everything else
   links, never restates); briefing is a briefing not docs; ADRs are append-only.
 
@@ -70,6 +71,21 @@ Every audit/reorg must apply these — they are the backbone of the checks below
 - **Briefing hygiene:** `AGENTS.md`/`CLAUDE.md` that restate canon instead of linking, carry
   stale structure, or describe commands in prose where an exact command belongs.
 
+### 3c. Extraction-contract (OCR / parser) drift
+When the repo has extraction code (turns unstructured documents into structured DB rows via a
+schema — typically `supabase/functions/ocr-*`, parsers, scrapers), audit its **extraction-contract
+ledger** (an AUTHORED canon, e.g. `docs/arquitectura/OCR_EDGE_FUNCTIONS.md`). This is its own
+dimension because the doc tracks a code-derived schema, giving a *three-way drift surface* — the
+`JSON_SCHEMA` (code) ↔ destination table columns (DB) ↔ the changelog (doc). Load
+[`references/extraction-contract-docs.md`](references/extraction-contract-docs.md) and check:
+- **Coverage:** every `ocr-*` / extraction function has a catalog row + changelog section.
+- **Three-way drift:** a `JSON_SCHEMA` field with no changelog row (undocumented drift — the
+  highest-value finding), a schema field with no DB column not noted as raw-only, or a DB column the
+  schema no longer populates.
+- **Safety-net patterns documented:** the `datos_raw` raw-payload column (backfill without re-upload)
+  and the `extract_only` reprocess mode (re-run a stored document when the schema grows), with
+  per-function support status.
+
 ### 4. Quality & best practices
 - Consistent formatting (headings, code blocks, tables, links).
 - No broken internal links or references.
@@ -100,6 +116,10 @@ full-repository audit uses streams like:
    references, orphaned documents.
 5. **Structure & consistency auditor** — folder organization, file naming, heading
    hierarchy, formatting consistency, information architecture.
+6. **Extraction-contract auditor** (only if the repo has OCR/parser/scraper code) — cross-reference
+   each extraction function's `JSON_SCHEMA` against its destination columns and the
+   extraction-contract ledger's changelog; verify `datos_raw` / `extract_only` are documented. See
+   [`references/extraction-contract-docs.md`](references/extraction-contract-docs.md).
 
 For targeted tasks, spawn only the relevant streams.
 
@@ -126,6 +146,13 @@ For audits, produce a structured report:
 - [ ] Generated-fact-held-by-hand → File → move to generated `reference` or link
 - [ ] Topic restated in N docs → File(s) → propose single canon + links
 - [ ] Briefing restates canon / stale structure → File → trim to links + critical rules
+
+## 🧬 Extraction-contract drift (OCR / parsers — only if the repo has extraction code)
+- [ ] Extractor with no ledger entry → function → add catalog row + changelog section
+- [ ] Schema field with no changelog row → function.field → document trigger + mapping + backfill
+- [ ] Schema field with no DB column, not noted raw-only → function.field → add column or note
+- [ ] DB column the schema no longer populates → table.column → verify vs DB, mark deprecated
+- [ ] datos_raw / extract_only pattern unmentioned → doc → document safety net + reprocess mode
 
 ## ✅ Well-Documented Areas
 - Acknowledge what's already in good shape
