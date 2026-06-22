@@ -14,7 +14,7 @@ description: >-
 license: MIT
 metadata:
   author: perennia-regen
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # html-perennia — Pensá en HTML, con la paleta de Perennia
@@ -55,6 +55,14 @@ Si la respuesta es "esto lo va a leer alguien y quiero que la lea bien", inclina
 - Commits, changelogs, post-mortems escritos para humanos que prefieren MD.
 - Cualquier cosa que vaya a editarse desde la terminal después.
 - Si el usuario pide explícitamente markdown.
+
+---
+
+## Cuándo usar `web-artifacts-builder` en lugar de esta skill
+
+Esta skill produce **HTML/CSS vanilla** para abrir con `open` o deployar a `public/` (Vercel). Si en cambio necesitás un artefacto con **estado complejo, routing, o componentes shadcn/ui**, y el destino es el **panel de artifacts de claude.ai** (no un archivo deployable), esa es otra herramienta: la skill `web-artifacts-builder` (React + TS + Tailwind + shadcn, bundleado a un único HTML).
+
+Son targets distintos, no los mezcles: **no metas React/Tailwind/shadcn en los HTML de esta skill** — rompe el deploy estático y la filosofía "sin libraries". Y al revés, si vas a usar `web-artifacts-builder`, traé de acá solo la **paleta y las tipografías de Perennia** (los tokens de más abajo) para que el artefacto no se sienta genérico.
 
 ---
 
@@ -142,6 +150,17 @@ Reglas mínimas: **olive** es el color de cualquier acción (link, CTA, label ac
   }
 </style>
 ```
+
+### Evitar el look "AI slop"
+
+El formato es libre, pero hay tics visuales que delatan un HTML "generado por IA" y le sacan la identidad de Perennia. Evitarlos:
+
+- **Todo centrado en una columna estrecha.** Preferí alineación a la izquierda y grids que usan el ancho de la pantalla.
+- **Gradientes morados / azul-violeta.** El acento de Perennia es tierra-verde (`--olive` / `--lime`), nunca el gradiente morado genérico de los starters.
+- **Rounded corners gigantes y uniformes.** `border-radius` exagerado en todo. Usá radios chicos y consistentes (4–8px), o bordes rectos cuando aporta.
+- **Sombras flotantes en cada elemento.** El default es borde `1px solid var(--gray-200)`; reservá `box-shadow` para donde hay elevación real (un modal, un dropdown).
+- **Una sola tipografía para todo.** El look genérico usa la misma fuente en títulos, body y labels. En Perennia, Inter como body es **deliberado** (es marca), pero va mezclado: DM Sans en headings, Inter en body, JetBrains Mono en labels/code. Esa mezcla es parte de la identidad — no caigas en "Inter en todo".
+- **Emojis como iconos decorativos.** Ya está en anti-patrones: sin emojis salvo que el usuario los pida.
 
 ### Inspiración visual
 
