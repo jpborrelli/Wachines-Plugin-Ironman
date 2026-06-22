@@ -57,3 +57,12 @@ Policies must reuse these, not re-implement auth inline:
 - Domain definitions: `supabase/domains/<dominio>/tables/`.
 - Real schema dump (source of truth): `supabase/schema-remote.sql` — always cross-check.
 - Anti-patterns reference: `docs/dev/ANTIPATRONES.md`.
+
+## 6. Accent-insensitive search (project specifics)
+The `unaccent` extension is already installed in schema **`extensions`**. The canonical pattern
+in this repo is `extensions.unaccent(lower(x))` on **both** sides of the predicate — most
+functions set `search_path` to `'api','public'` (no `extensions`), so always **schema-qualify**.
+Any text search over `nombre_establecimiento`, `nombre_educador`, service names, or other
+user-typed labels that isn't accent-insensitive is a bug (técnicos type `Espin` for `El Espín`).
+See `docs/dev/ANTIPATRONES.md` #5 and migration
+`..._clientes_buscar_establecimiento_unaccent.sql` for the reference fix.

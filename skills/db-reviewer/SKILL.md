@@ -115,6 +115,15 @@ El COMMENT es la **fuente de verdad de la semántica**: lo lee `pg_catalog`, Pos
   `timestamp`).
 - Add indexes for new FK columns.
 - Avoid nested dollar quoting (`$f$` inside `$function$`) — use `quote_literal()` if needed.
+- **Accent-insensitive text search.** Any user-facing fuzzy search over names/labels
+  (`ILIKE`/`LIKE`, `=`, or `similarity()`/`pg_trgm`) must wrap **both** the column and the
+  search term in `unaccent()` — otherwise it fails on diacritics (user types `Espin`, the
+  row is `El Espín` → 0 results). Apply it consistently on both sides and combine with
+  `lower()` for case-insensitivity: `unaccent(lower(col)) ILIKE unaccent(lower('%'||term||'%'))`.
+  Notes: `unaccent()` is **not IMMUTABLE** by default — fine at query runtime, but a functional
+  index needs an IMMUTABLE wrapper. On Supabase the extension lives in schema `extensions`, so
+  schema-qualify it (`extensions.unaccent(...)`) when the function's `search_path` doesn't
+  include `extensions`. Flag any text-search predicate that touches only one side.
 
 ### 7. Postgres performance
 Use the `supabase-postgres-best-practices` skill to validate:
