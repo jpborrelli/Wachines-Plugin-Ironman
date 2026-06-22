@@ -14,14 +14,14 @@ description: >-
 license: MIT
 metadata:
   author: perennia-regen
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # html-perennia — Pensá en HTML, con la paleta de Perennia
 
 Esta skill es **una señal, no un generador**. No tiene boilerplates, no tiene catálogo de componentes obligatorios, no tiene templates rígidos. Cada artefacto se diseña libremente según el caso.
 
-Lo único que asegura: (1) que Claude considere HTML como default cuando el artefacto se va a leer/validar/compartir, en lugar de defaultear a markdown plano, y (2) que el resultado tenga la identidad visual de Perennia (paleta tierra-verde, DM Sans + Inter + JetBrains Mono).
+Asegura tres cosas: (1) que Claude considere HTML como default cuando el artefacto se va a leer/validar/compartir, en lugar de defaultear a markdown plano; (2) que el resultado tenga la identidad visual de Perennia (paleta tierra-verde, DM Sans + Inter + JetBrains Mono); y (3) un **piso de legibilidad** — que no se vaya a denso-apretado-arcoíris. Lo que NO impone es el formato: qué componentes, qué layout, qué estructura, lo decidís libremente en cada caso.
 
 Inspirada en [The Unreasonable Effectiveness of HTML](https://x.com/trq212) de Thariq Shihipar.
 
@@ -83,9 +83,9 @@ El formato concreto de cada uno **lo decidís vos**. No hay un template "para pl
 
 ---
 
-## Estilo Perennia — la única restricción
+## Restricción 1 — identidad Perennia
 
-Todo lo demás es libre. Pero los colores y tipografías deben ser los de Perennia, sino el artefacto se siente de otro repo. Esta es la "marca de agua" visual.
+El formato es libre. Pero los colores y tipografías deben ser los de Perennia, sino el artefacto se siente de otro repo. Esta es la "marca de agua" visual.
 
 ### Tokens de color (CSS variables)
 
@@ -160,13 +160,93 @@ El formato es libre, pero hay tics visuales que delatan un HTML "generado por IA
 - **Rounded corners gigantes y uniformes.** `border-radius` exagerado en todo. Usá radios chicos y consistentes (4–8px), o bordes rectos cuando aporta.
 - **Sombras flotantes en cada elemento.** El default es borde `1px solid var(--gray-200)`; reservá `box-shadow` para donde hay elevación real (un modal, un dropdown).
 - **Una sola tipografía para todo.** El look genérico usa la misma fuente en títulos, body y labels. En Perennia, Inter como body es **deliberado** (es marca), pero va mezclado: DM Sans en headings, Inter en body, JetBrains Mono en labels/code. Esa mezcla es parte de la identidad — no caigas en "Inter en todo".
-- **Emojis como iconos decorativos.** Ya está en anti-patrones: sin emojis salvo que el usuario los pida.
+- **Borde izquierdo de color como sistema de categorías.** Un `border-left:4px solid` ocasional para un callout está bien. Pero usarlo en CADA card con un color distinto por categoría (azul=técnico, oliva=producto, violeta=PM…) convierte el doc en un semáforo. Es el anti-patrón #8 del blacklist de AI-slop. Si tenés >3 categorías, distinguilas con un **label de texto**, no con 6 hues de borde.
+- **La grilla de 3 (o N) cards simétricas:** ícono-en-círculo-de-color + título bold + 2 líneas, repetido idéntico. El layout más reconocible de "lo hizo una IA". Si las cards no tienen pesos distintos (una manda, las otras acompañan), la grilla es decorativa.
+- **Emojis como iconos decorativos.** Ya está en anti-patrones: sin emojis salvo que el usuario los pida — y eso incluye un emoji por tab y por heading.
 
 ### Inspiración visual
 
 Para calibrar el look, mirá HTMLs ya hechos de tu repo (decks, specs, reports) y fijate cómo
 combinan la paleta, la jerarquía tipográfica y los SVG inline. NO copiar la estructura literal
 de ninguno — son ejemplos para **calibrar el look**, no templates.
+
+---
+
+## Restricción 2 — piso de legibilidad
+
+La identidad (restricción 1) hace que el doc se sienta de Perennia. Esto hace que se **lea**. Es la restricción que faltaba: sin ella, cada HTML reinventa tipografía, espaciado y color, y termina denso-apretado-arcoíris. La regla general: **denso ≠ apretado**. Denso es sin relleno (sin lorem, sin flavor text); apretado es sin aire ni jerarquía. Querés lo primero, no lo segundo.
+
+Los tokens de abajo son el **default recomendado** (copiá y usá). No son obligatorios, pero si necesitás un tamaño o un espaciado, salí de esta escala antes de inventar un valor suelto.
+
+### Escala tipográfica — 6 pasos, nada en el medio
+
+El olor más común: 10–12 tamaños de fuente casi iguales (15 / 14 / 13.5 / 13 / 12.5 / 11.5…). El ojo no encuentra jerarquía entre escalones de medio px. Usá **estos 6 y solo estos**:
+
+```css
+:root {
+  --t-label: 12px;   /* labels, tags, mono, captions, celdas densas — MÍNIMO legible */
+  --t-sm:    14px;   /* texto secundario, metadata, tablas */
+  --t-body:  16px;   /* body — default de lectura */
+  --t-h3:    20px;   /* subtítulos, títulos de card */
+  --t-h2:    26px;   /* títulos de sección */
+  --t-h1:    33px;   /* hero / título del doc */
+  /* line-heights */
+  --lh-body: 1.5;    --lh-head: 1.2;    --lh-table: 1.4;
+}
+```
+
+Reglas duras:
+- **Nada de contenido legible por debajo de 12px.** Un tag a 9.5px no se lee proyectado. Si no entra, sobra contenido, no falta px.
+- **¿Necesitás más jerarquía que 6 pasos?** Usala con **peso** (400/500/600/700) o **color**, nunca con medio px. Peso y color son ejes gratis; los tamaños intermedios solo agregan ruido.
+- **Body ≥16px**, line-height 1.5. Headings line-height 1.2. Tablas/datos densos line-height 1.4.
+- **Números en columnas → `font-variant-numeric: tabular-nums`** (se alinean y comparan). **Headings → `text-wrap: balance`** (evita viudas). Fuente para datos: la mono (JetBrains).
+- **Escala suave a propósito** (~1.25, no 1.6): en un doc denso un h1 gigante desperdicia pantalla. Si el doc es un poster (1 idea, hero grande), ahí sí podés subir el h1.
+
+### Escala de espaciado — base 8, el aire no es desperdicio
+
+```css
+:root { --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; }
+```
+
+- **Padding de card ≥ `--s5` (24px).** 11–13px aprieta el contenido contra el borde.
+- **Separación entre bloques/secciones ≥ `--s5` (24px).** Las cards pegadas se leen como una sola.
+- **Gap de grids ≥ `--s4` (16px).** 
+- **Ritmo:** lo relacionado va junto, lo distinto va separado. Más espacio ENTRE secciones que DENTRO de una. Si dos cosas están a la misma distancia, se leen como del mismo grupo.
+
+### Disciplina de color — 1 acento, no 9
+
+La paleta tiene 5 de marca (tierra-verde) + 5 semantic. El olor: usar los 5 semantic como un **sistema de 6 categorías** (cada vertical/bloque su hue de fondo y borde). Resultado: arcoíris, nada manda.
+
+- **`--olive` es EL acento.** Links, CTAs, labels activos, el borde que importa. Uno solo.
+- **Los semantic (blue/amber/red/green/violet) son para ESTADO puntual:** un badge "pendiente", un dot de error, una fila destacada. No para colorear secciones enteras, fondos de bloque, ni como paleta de categorías.
+- **Máximo ~3 hues visibles por vista** además de los tierra-verde. Si tenés que distinguir 6 cosas, distinguilas con **texto/labels** o con una **intensidad** del mismo color (`rgba(111,143,7,.10/.25/.5)`), no con 6 colores distintos.
+- **Contraste:** texto body ≥ 4.5:1 sobre su fondo (WCAG AA). El gris claro sobre off-white no llega — para texto que se lee, usá `--brown` o `--gray-700`.
+
+### Jerarquía por contraste, no por acumulación
+
+- **Máximo 1–2 negritas por párrafo.** Si todo está en bold, nada resalta.
+- **Una sola cosa destacada por bloque.** No apiles bold + color + itálica en la misma palabra: elegí UN eje de énfasis.
+- **Squint test:** entrecerrá los ojos (o achicá el zoom al 50%). Si no se distingue qué es título, qué es cuerpo y qué es lo importante, la jerarquía está plana. Arreglalo con tamaño/peso/espacio, no con más color.
+- **Una idea por vista.** Si una pestaña/sección quiere decir 10 cosas, el lector no sabe dónde mirar. Partila o priorizá.
+
+---
+
+## Checklist — ¿huele a difícil de leer?
+
+Antes de dar por terminado un HTML, pasá esta lista. Cada "sí" es una bandera (no necesariamente un error, pero revisalo):
+
+- [ ] ¿Más de ~6 tamaños de fuente distintos? ¿Hay `13.5px`, `11.5px`, `9.5px` sueltos?
+- [ ] ¿Algún texto que se lee por debajo de 12px?
+- [ ] ¿Fondos o bordes tintados usados como sistema de categorías (>3 hues)?
+- [ ] ¿Más de 1–2 negritas por párrafo? ¿bold + color + itálica juntos?
+- [ ] ¿Padding de card o gaps por debajo de 16px? ¿Cards pegadas sin aire entre secciones?
+- [ ] ¿Un emoji por tab / por heading?
+- [ ] ¿Border-left de color en cada card? ¿Sombra difusa en cada elemento?
+- [ ] ¿Grilla de N cards simétricas todas con el mismo peso?
+- [ ] Squint test: ¿se distingue la jerarquía con el zoom al 50%?
+- [ ] ¿La vista intenta decir más de una cosa?
+
+Si tenés el browser a mano, **mirá el render** (no solo el código): `open <path>` o un screenshot. Los problemas de legibilidad se ven, no se leen.
 
 ---
 
