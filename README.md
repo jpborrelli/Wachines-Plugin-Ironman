@@ -47,6 +47,7 @@ have with `npx skills list`; search with `npx skills find <query>`.
 | [`security-reviewer`](skills/security-reviewer) | Reviews code for OWASP Top 10: injection, XSS, broken auth, secrets, insecure data (+ Supabase checks) | perennia-regen · MIT |
 | [`docs-architect`](skills/docs-architect) | Audits/creates/reorganizes docs; detects drift between docs and code; enforces a Diátaxis+ADR taxonomy and generated-vs-authored anti-drift rules ([doc-conventions](skills/docs-architect/references/doc-conventions.md)); parallel sub-agent audits | perennia-regen · MIT |
 | [`rpc-api-contract`](skills/rpc-api-contract) | Standard for exposing business logic as a uniform agent-operable API: `api` schema, `{data,effects,warnings}` envelope, RFC 7807 errors, Idempotency-Key, SECURITY DEFINER, preview/confirm | perennia-regen · MIT |
+| [`eve`](skills/eve) | Build/edit/debug agents on the eve framework — defers to the version-locked bundled docs (`node_modules/eve/docs`) as the source of truth so guidance never drifts from the installed version | Vercel · Apache-2.0 |
 
 `db-reviewer`, `docs-architect` and `security-reviewer` are also provided as **subagents** in
 [`agents/`](agents) for users who prefer the Claude Code subagent form — copy them into your

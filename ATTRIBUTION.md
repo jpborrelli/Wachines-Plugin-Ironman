@@ -13,6 +13,7 @@ licenses are preserved below and in each skill's frontmatter.
 | `web-design-guidelines` | Vercel | MIT | [vercel-labs/web-interface-guidelines](https://github.com/vercel-labs/web-interface-guidelines) (the skill fetches the live guidelines at run time) |
 | `next-best-practices` | Compiled from the official [Next.js documentation](https://nextjs.org/docs) and community best practices | MIT (this compilation) | — |
 | `frontend-design` | Anthropic, PBC | Apache-2.0 | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design) — redistributed **unmodified**; the original `LICENSE.txt` is included in the skill folder |
+| `eve` | Vercel | Apache-2.0 | [vercel/eve](https://github.com/vercel/eve) — pointer skill that defers to the package's version-locked `node_modules/eve/docs`; only `metadata`/`license` frontmatter added, body unmodified |
 
 ## First-party skills & agents
 
