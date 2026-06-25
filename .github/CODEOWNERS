@@ -1,6 +1,5 @@
 # Code owners de la organizacion Perennia-Regeneracion
 # Todo PR a las ramas de integracion (main/staging/preview) requiere la
-# aprobacion de un maintainer. El team @Perennia-Regeneracion/maintainers es el
-# owner; @perennia-regen queda listado directo para no depender del membership.
+# aprobacion de un miembro del team @Perennia-Regeneracion/maintainers.
 
-* @perennia-regen @Perennia-Regeneracion/maintainers
+* @Perennia-Regeneracion/maintainers
