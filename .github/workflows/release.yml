@@ -1,0 +1,64 @@
+name: release
+
+# Auto-bump del plugin en cada push a main, derivado de Conventional Commits.
+# El equipo mergea PRs como siempre; este workflow sube la `version` de
+# .claude-plugin/plugin.json + CHANGELOG y crea el tag, así el auto-update del
+# plugin (autoUpdate: true) le llega a todo el equipo en el próximo startup.
+#
+# Sin loop: los pushes hechos con GITHUB_TOKEN no disparan workflows. Igual
+# guardamos con [skip release] por las dudas.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: ${{ !contains(github.event.head_commit.message, '[skip release]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # historia completa + tags para derivar el bump
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Calcular y aplicar el bump
+        id: bump
+        run: node bin/release-bump.mjs
+
+      - name: Sanity check del manifiesto (JSON válido)
+        if: ${{ steps.bump.outputs.bumped == 'true' }}
+        run: node -e "JSON.parse(require('fs').readFileSync('.claude-plugin/plugin.json','utf8'))" && echo "plugin.json OK"
+
+      - name: Commitear bump + tag
+        if: ${{ steps.bump.outputs.bumped == 'true' }}
+        env:
+          V: ${{ steps.bump.outputs.version }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .claude-plugin/plugin.json CHANGELOG.md
+          git commit -m "chore(release): wachines-skills v${V} [skip release]"
+          git tag "wachines-skills--v${V}"
+          git push origin HEAD:main
+          git push origin "wachines-skills--v${V}"
+
+      - name: Tag baseline (primer run, sin bump)
+        if: ${{ steps.bump.outputs.baseline == 'true' }}
+        env:
+          V: ${{ steps.bump.outputs.version }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag "wachines-skills--v${V}"
+          git push origin "wachines-skills--v${V}"

@@ -51,8 +51,11 @@ off). To get hands-off updates, declare the marketplace with `autoUpdate` in you
 }
 ```
 
-Updates follow the plugin's `version` (in `.claude-plugin/plugin.json`) — bump it per release to
-ship to the team (`claude plugin tag`). Manual update any time:
+Updates follow the plugin's `version` (in `.claude-plugin/plugin.json`). **You don't bump it by
+hand** — a GitHub Action ([`.github/workflows/release.yml`](.github/workflows/release.yml)) bumps
+it on every push to `main`, derived from your Conventional Commits (`feat` → minor, `fix` → patch,
+`!`/BREAKING → major), updates the `CHANGELOG.md`, and tags the release. Merge a PR as usual and
+the team picks up the new version at their next startup. Manual update any time:
 `claude plugin marketplace update wachines && claude plugin update wachines-skills` (restart to apply).
 
 ### Codex & other agents → individual skills (`npx skills`)

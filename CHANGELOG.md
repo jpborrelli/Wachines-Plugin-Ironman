@@ -1,8 +1,9 @@
 # Changelog
 
-Releases of the `wachines-skills` Claude Code plugin. Bump `version` in
-`.claude-plugin/plugin.json` per release; with `autoUpdate` on, the team picks up the new
-version at the next session startup.
+Releases of the `wachines-skills` Claude Code plugin. **Entries below `0.2.0` are written
+automatically** by the `release` GitHub Action on every push to `main` (version bump derived from
+Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
+startup. No manual bump needed.
 
 ## 0.1.0
 
