@@ -1,0 +1,29 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "wachines",
+  "description": "Wachines / Perennia software-factory marketplace for Claude Code. Curated, project-agnostic skills and subagents for shipping quality web apps and databases.",
+  "owner": {
+    "name": "perennia-regen",
+    "url": "https://github.com/Perennia-Regeneracion"
+  },
+  "plugins": [
+    {
+      "name": "wachines-skills",
+      "description": "Software factory toolkit: Postgres/Supabase & React/Next best practices, SQL-migration & security reviewers, docs architect, RPC-API contract, functional front QA (wachi-qa), the wachi-fabrica orchestrator, and db/frontend/security subagents. Project-agnostic by design.",
+      "author": {
+        "name": "perennia-regen"
+      },
+      "category": "development",
+      "keywords": [
+        "supabase",
+        "postgres",
+        "nextjs",
+        "react",
+        "code-review",
+        "security",
+        "docs"
+      ],
+      "source": "./"
+    }
+  ]
+}

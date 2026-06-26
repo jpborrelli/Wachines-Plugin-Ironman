@@ -15,6 +15,25 @@ you want, contribute the ones you wish existed.
 
 ## Install
 
+### As a Claude Code plugin (recommended for teams)
+
+This repo is also a **Claude Code plugin marketplace**. One install wires up every skill **and**
+the `db-architect` / `frontend-specialist` / `db-reviewer` / `security-reviewer` subagents — no
+`npx`, no per-agent copying:
+
+```bash
+# add the marketplace (defined in .claude-plugin/marketplace.json)
+claude plugin marketplace add Perennia-Regeneracion/Wachines-Plugin-Ironman
+
+# install the plugin (skills + subagents auto-discovered)
+claude plugin install wachines-skills@wachines
+```
+
+Or interactively inside Claude Code: `/plugin marketplace add Perennia-Regeneracion/Wachines-Plugin-Ironman`
+then `/plugin install`. Update later with `claude plugin marketplace update wachines`.
+
+### As individual skills (`npx skills`)
+
 Requires Node.js. Install all skills, or pick individual ones:
 
 ```bash

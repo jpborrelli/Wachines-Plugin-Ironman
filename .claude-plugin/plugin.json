@@ -1,0 +1,24 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "wachines-skills",
+  "description": "Software factory toolkit for Claude Code: Postgres/Supabase & React/Next best practices, SQL-migration & security reviewers, docs architect, RPC-API contract, functional front QA, and the wachi-fabrica orchestrator — plus db/frontend/security subagents. Project-agnostic.",
+  "version": "0.1.0",
+  "author": {
+    "name": "perennia-regen",
+    "url": "https://github.com/Perennia-Regeneracion"
+  },
+  "homepage": "https://github.com/Perennia-Regeneracion/Wachines-Plugin-Ironman",
+  "repository": "https://github.com/Perennia-Regeneracion/Wachines-Plugin-Ironman",
+  "license": "MIT",
+  "keywords": [
+    "supabase",
+    "postgres",
+    "nextjs",
+    "react",
+    "code-review",
+    "security",
+    "docs",
+    "qa",
+    "agent-skills"
+  ]
+}
