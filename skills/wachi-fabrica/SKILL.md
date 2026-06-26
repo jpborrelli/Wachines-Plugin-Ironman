@@ -68,4 +68,6 @@ Revisá cada entrega con el **quote-the-evidence gate** (citá `file:line` o el 
 ## Operarios y skills que orquesta
 Agentes: `db-architect`, `frontend-specialist`, `db-reviewer`, `security-reviewer`. Skills: `wachi-qa` (QA de front, nuestra; devuelve `CAPTURAS PARA EL USUARIO` que mostrás vos)/`spec`/`/review`/`/ship`/`/investigate`/`design-review`/`rpc-api-contract`/`supabase-postgres-best-practices`/`frontend-design`. (Vienen en este plugin — instalá todo para tener la fábrica completa.)
 
-**¿Agente o skill?** El humano invoca **skills**; el orquestador **spawnea agentes** (operarios aislados). Una skill es la receta; un agente es el operario aislado que la puede seguir. Criterio completo: `productos/fabrica/agentes-vs-skills.md` en el brain.
+**¿Agente o skill?** El humano invoca **skills**; el orquestador **spawnea agentes** (operarios aislados). Una skill es la receta; un agente es el operario aislado que la puede seguir.
+
+**Cómo un subagente corre una skill:** hereda el **Skill tool** y los **MCP tools** por defecto. Si la skill está **instalada** (este plugin instalado vía `npx skills add`), el subagente la **invoca con el Skill tool** — no le pases el `SKILL.md` (eso es solo fallback si no está instalada). También podés **preloadearla** con el campo `skills: wachi-qa` en `agents/<n>.md`. Criterio completo: `productos/fabrica/agentes-vs-skills.md` en el brain.

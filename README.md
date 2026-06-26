@@ -65,6 +65,22 @@ under `references/`. The Perennia BackOffice overlay
 checklist to that repo's real domains, soft-delete tables, RLS helpers, and docs layout. Add
 your own `references/<project>.md` to specialize a skill for another codebase.
 
+## Agentes vs Skills (cuándo cada uno)
+
+La fábrica tiene dos tipos de pieza. La duda recurrente — "¿por qué esto es agente y aquello skill?":
+
+| | **Skill** (`skills/<n>/SKILL.md`) | **Agente** (`agents/<n>.md`) |
+|---|---|---|
+| Qué es | Una receta / capacidad | Un operario con un rol (system prompt) |
+| Dónde corre | **INLINE**, en el contexto del que la invoca | **AISLADO**, en su propia ventana, en paralelo |
+| Cómo se usa | Se **invoca** (Skill tool / trigger) | Se **spawnea** (Task tool) |
+| Contexto | Consume el del invocador | No quema el tuyo; devuelve un reporte |
+| Ejemplos | `wachi-fabrica`, `wachi-qa`, `db-reviewer`, `security-reviewer` | `db-architect`, `frontend-specialist` |
+
+**En una frase:** el humano invoca skills; el orquestador (`wachi-fabrica`) spawnea agentes. Una skill es la receta; un agente es el operario aislado que la puede seguir.
+
+**Cómo un subagente corre una skill:** hereda el **Skill tool** y los MCP tools por defecto. Con el plugin **instalado** (`npx skills add`), el subagente invoca la skill con el Skill tool (no le pasés el `SKILL.md`); o se **preloadea** con `skills: <n>` en `agents/<n>.md`. Pasar el `SKILL.md` como texto es solo fallback cuando la skill no está instalada. Doctrina completa: `productos/fabrica/agentes-vs-skills.md` (brain del hub).
+
 ## gstack — referenced, not bundled
 
 The author's daily driver for browsing, QA, planning, review, and shipping is
