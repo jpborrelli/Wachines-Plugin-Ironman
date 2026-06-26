@@ -15,6 +15,17 @@ reviewers, docs), **gokapso/agent-skills** (WhatsApp/Kapso) y registra **Engram*
 Claude Code y Codex cuando esos CLIs existen. Si sos del equipo comercial, sumá también
 **perennia-skills** (ver abajo).
 
+> **wachines-skills se instala distinto según el agente:**
+> - **Claude Code → como plugin.** El script registra el marketplace `wachines` con
+>   `autoUpdate: true` en tu `~/.claude/settings.json` e instala el plugin `wachines-skills`
+>   (todas las skills **+ los subagentes** `db-architect`/`frontend-specialist`/`db-reviewer`/`security-reviewer`).
+>   Se **auto-actualiza solo al iniciar sesión** — no corras nada (es el equivalente nativo del
+>   `auto_upgrade` de gstack; no se dispara "al usar una skill", sino en cada startup).
+> - **Codex / otros agentes → vía `npx skills`** (no soportan plugins de Claude Code).
+>
+> Update manual cuando quieras: `claude plugin marketplace update wachines && claude plugin update wachines-skills`
+> (aplica al reiniciar). Para apagar el auto-update, poné `"autoUpdate": false` en esa entrada.
+
 Por defecto instala skills para `claude-code` y `codex`. Para limitarlo:
 
 ```bash

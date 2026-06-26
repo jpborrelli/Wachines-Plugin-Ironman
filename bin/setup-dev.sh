@@ -56,15 +56,48 @@ else
   fi
 fi
 
-# --- 2. skills vía npx ---------------------------------------------------------
+# --- 2a. wachines-skills en Claude Code: PLUGIN nativo (auto-update al startup) -----
+# Claude Code soporta plugins; preferimos el plugin sobre npx porque trae TODAS las skills
+# + los subagentes (db-architect, frontend-specialist, db-reviewer, security-reviewer) en una
+# sola instalación, y se auto-actualiza solo al iniciar sesión (equivalente nativo del
+# auto_upgrade de gstack). Codex/otros agentes NO soportan plugins → siguen por npx (sección 2b).
+export WACHINES_REPO="Perennia-Regeneracion/Wachines-Plugin-Ironman"
+if printf '%s ' $AGENTS | grep -qw claude-code; then
+  if have claude; then
+    say "Claude Code: registrando marketplace wachines + plugin (auto-update ON)"
+    claude plugin marketplace add "$WACHINES_REPO" >/dev/null 2>&1 \
+      || claude plugin marketplace update wachines >/dev/null 2>&1 || true
+    # autoUpdate declarativo en settings.json: el plugin se actualiza solo en cada startup.
+    if have node; then
+      node -e '
+        const fs=require("fs"),os=require("os"),path=require("path");
+        const f=path.join(os.homedir(),".claude","settings.json");
+        let s={}; try{ s=JSON.parse(fs.readFileSync(f,"utf8")||"{}"); }catch(e){}
+        s.extraKnownMarketplaces=s.extraKnownMarketplaces||{};
+        s.extraKnownMarketplaces.wachines={source:{source:"github",repo:process.env.WACHINES_REPO},autoUpdate:true};
+        fs.mkdirSync(path.dirname(f),{recursive:true});
+        fs.writeFileSync(f, JSON.stringify(s,null,2)+"\n");
+      ' || warn "no pude setear autoUpdate del plugin en settings.json"
+    fi
+    claude plugin install wachines-skills@wachines --scope user >/dev/null 2>&1 \
+      || warn "no pude instalar el plugin wachines-skills (¿ya mergeado en main?)"
+  else
+    warn "Claude Code CLI no está en PATH; salteo el plugin wachines-skills."
+  fi
+fi
+
+# --- 2b. skills vía npx (Codex y otros agentes sin plugins) ---------------------
 if have npx; then
   # -g = global (user-level): cae en el directorio user-level del agente y aplica a TODOS los
   # proyectos. Sin -g, el CLI auto-detecta "project si estás dentro de un repo".
   for agent in $AGENTS; do
-    say "Instalando wachines-skills core (dev) para $(agent_label "$agent") — global"
-    # Instalamos solo el set core para no pisar skills con nombres compartidos
-    # (html-perennia, supabase/vercel/web-design) que pueden venir de perennia-skills u otros upstreams.
-    npx -y skills add perennia-regen/wachines-skills -g -a "$agent" --skill $WACHINES_CORE_SKILLS || warn "falló wachines-skills para $agent"
+    # Claude Code ya recibe wachines-skills por el plugin (sección 2a) → no lo dupliques por npx.
+    if [ "$agent" != "claude-code" ]; then
+      say "Instalando wachines-skills core (dev) para $(agent_label "$agent") — global"
+      # Instalamos solo el set core para no pisar skills con nombres compartidos
+      # (html-perennia, supabase/vercel/web-design) que pueden venir de perennia-skills u otros upstreams.
+      npx -y skills add perennia-regen/wachines-skills -g -a "$agent" --skill $WACHINES_CORE_SKILLS || warn "falló wachines-skills para $agent"
+    fi
 
     say "Instalando gokapso/agent-skills (WhatsApp/Kapso) para $(agent_label "$agent") — global"
     npx -y skills add gokapso/agent-skills -g -a "$agent" || warn "falló gokapso para $agent (¿necesita auth?)"
@@ -175,4 +208,4 @@ else
   warn "Engram no está instalado. Instalalo con Gentle AI o Homebrew y re-ejecutá este script."
 fi
 
-say "Listo. Verificá con: npx skills list -g | codex mcp list | engram projects list"
+say "Listo. Verificá con: claude plugin list | npx skills list -g | codex mcp list | engram projects list"

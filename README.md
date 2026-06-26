@@ -15,7 +15,10 @@ you want, contribute the ones you wish existed.
 
 ## Install
 
-### As a Claude Code plugin (recommended for teams)
+**Pick by your agent:** Claude Code → the plugin (recommended). Codex and any other agent →
+`npx skills` (Claude Code plugins only work in Claude Code).
+
+### Claude Code → the plugin (recommended)
 
 This repo is also a **Claude Code plugin marketplace**. One install wires up every skill **and**
 the `db-architect` / `frontend-specialist` / `db-reviewer` / `security-reviewer` subagents — no
@@ -30,9 +33,29 @@ claude plugin install wachines-skills@wachines
 ```
 
 Or interactively inside Claude Code: `/plugin marketplace add Perennia-Regeneracion/Wachines-Plugin-Ironman`
-then `/plugin install`. Update later with `claude plugin marketplace update wachines`.
+then `/plugin install`.
 
-### As individual skills (`npx skills`)
+**Auto-update.** Plugins do **not** update when you run a skill — they update **at session
+startup, and only if the marketplace has `autoUpdate` on** (third-party marketplaces default to
+off). To get hands-off updates, declare the marketplace with `autoUpdate` in your
+`~/.claude/settings.json` (the team `bin/setup-dev.sh` does this for you):
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "wachines": {
+      "source": { "source": "github", "repo": "Perennia-Regeneracion/Wachines-Plugin-Ironman" },
+      "autoUpdate": true
+    }
+  }
+}
+```
+
+Updates follow the plugin's `version` (in `.claude-plugin/plugin.json`) — bump it per release to
+ship to the team (`claude plugin tag`). Manual update any time:
+`claude plugin marketplace update wachines && claude plugin update wachines-skills` (restart to apply).
+
+### Codex & other agents → individual skills (`npx skills`)
 
 Requires Node.js. Install all skills, or pick individual ones:
 
