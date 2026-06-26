@@ -131,6 +131,8 @@ No arranques el dev server con la versión equivocada (ej. RumIAndo pide node>=2
 ```bash
 mkdir -p "$(pwd)/.wachi-qa/reports/screenshots"
 SHOTS="$(pwd)/.wachi-qa/reports/screenshots"   # ruta ABSOLUTA para pasarle a screenshot
+# El output de QA se regenera en cada corrida → no se versiona. Gitignoralo si falta.
+grep -q "^.wachi-qa/" .gitignore 2>/dev/null || printf "\n# Output de QA local (wachi-qa)\n.wachi-qa/\n" >> .gitignore
 ```
 Copiá la plantilla de `templates/qa-report-template.md` al output dir y renombrala `qa-report-<app>-<YYYY-MM-DD>.md`. **Usá siempre `$SHOTS/...` (absoluto) en cada `screenshot`** — las rutas relativas se resuelven contra el cwd del daemon y el archivo se pierde en silencio (regla dura 11).
 

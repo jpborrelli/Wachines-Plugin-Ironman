@@ -67,3 +67,5 @@ Revisá cada entrega con el **quote-the-evidence gate** (citá `file:line` o el 
 
 ## Operarios y skills que orquesta
 Agentes: `db-architect`, `frontend-specialist`, `db-reviewer`, `security-reviewer`. Skills: `wachi-qa` (QA de front, nuestra; devuelve `CAPTURAS PARA EL USUARIO` que mostrás vos)/`spec`/`/review`/`/ship`/`/investigate`/`design-review`/`rpc-api-contract`/`supabase-postgres-best-practices`/`frontend-design`. (Vienen en este plugin — instalá todo para tener la fábrica completa.)
+
+**¿Agente o skill?** El humano invoca **skills**; el orquestador **spawnea agentes** (operarios aislados). Una skill es la receta; un agente es el operario aislado que la puede seguir. Criterio completo: `productos/fabrica/agentes-vs-skills.md` en el brain.
