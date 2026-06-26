@@ -46,6 +46,9 @@ Not "is it best practice?" — **"is it the right trade-off for THIS product?"**
 8. Enum/status value added **without handling all sibling references** (requires reading code OUTSIDE the migration — Grep the siblings).
 9. `varchar`/`timestamp`/random-uuid where `text`/`timestamptz`/`uuidv7` is the norm.
 10. Append-only/event-sourcing forced on **authoritative/config data** (complexity for free) — *append-only only where the correction itself is information*.
+11. **Mutative self-test inside a migration** — a `DO $$ ... $$` (or any block) that EXECUTES business functions with side effects during `migrate-prod` (see Migrations §1).
+12. **`array || 'literal'` without explicit cast** — ambiguous overload, blows up on real data with `malformed array literal` (SQLSTATE 22P02) (see Migrations §2).
+13. **Data migration referencing a specific ID (hardcoded UUID/PK) without an `IF EXISTS` guard** — not reproducible from baseline; the clean `db reset` fails (see Migrations §3).
 
 ## Design principles
 - **Coherence over shortcuts** (#5 above). JSONB is for genuinely unstructured payloads, promoted to columns as they stabilize.
@@ -53,6 +56,57 @@ Not "is it best practice?" — **"is it the right trade-off for THIS product?"**
 - **Audit with judgment:** distinguish event-log-of-domain (the row IS a log; rare, only where the correction is information) · staging/preview (given by preview/confirm RPCs) · forensic audit log (immutable side table; the business stays mutable — usually "the real gap"). **Audit ≠ append-only of the business.**
 - **Agent-operable contract** (if agent-first): named RPCs, uniform envelope `{data, effects, warnings}`, `Idempotency-Key` on mutations, RFC 7807 errors, `SECURITY DEFINER` + auth gate. The signature IS the contract.
 - **Security is a deliverable:** RLS + helpers reused; ship the tests.
+
+## Migraciones: reproducibilidad y seguridad en prod
+
+**Una migración corre dos veces y en dos mundos:** `migrate-prod` la aplica contra **datos reales de prod**, y el CI de baseline la aplica contra una **DB limpia y vacía**. El bug del que se aprendió esto solo aparecía en el primer mundo (`20260625150000_facturacion_cobro_eve_rpcs.sql` rompió `migrate-prod` con `ERROR: malformed array literal ... (SQLSTATE 22P02)` en un release de AFIP/plata; el baseline limpio pasó verde). **El CI de baseline NO atrapa bugs que solo emergen con datos de prod.** No confíes en que el CI pase: leé cada migración a mano buscando los 3 patrones de abajo.
+
+### 1. Verificaciones dentro de una migración = READ-ONLY. Nunca self-test mutativo.
+Una migración NUNCA ejecuta lógica de negocio mutativa ni self-tests que corran funciones con efectos. Eso corre contra prod en `migrate-prod`, puede tocar/corromper datos reales, y rompe de formas que el baseline limpio no ve. Las verificaciones permitidas dentro del `.sql` son solo de lectura: el objeto existe, la columna está, conteos. Los **tests de comportamiento van en el suite** (RLS/integración), NO en el `.sql`.
+
+```sql
+-- MAL: ejecuta RPCs de negocio (mutativo) contra datos reales durante la migración
+DO $$ BEGIN
+  PERFORM cobro_finalizar(...);          -- ⚠️ side effects en prod
+  ASSERT (SELECT estado FROM cobros WHERE id = ...) = 'finalizado';
+END $$;
+
+-- BIEN: chequeo read-only de que el objeto quedó creado
+DO $$ BEGIN
+  ASSERT (SELECT count(*) FROM pg_proc WHERE proname = 'cobro_finalizar') = 1,
+    'cobro_finalizar no fue creada';
+END $$;
+-- el test de comportamiento de cobro_finalizar vive en el suite, no acá.
+```
+
+### 2. Append a array: cast explícito siempre.
+`arr || 'literal'` es ambiguo: Postgres puede resolver la sobrecarga `anyarray || anyarray` e intentar castear el string a `text[]` → `malformed array literal` si el string no es un array literal válido. Reventó solo con datos reales.
+
+```sql
+-- MAL: overload ambiguo, casteo implícito a text[]
+v_motivos := v_motivos || 'texto libre';
+
+-- BIEN: array_append, o casteo explícito del elemento
+v_motivos := array_append(v_motivos, 'texto libre'::text);
+v_motivos := v_motivos || 'texto libre'::text;
+```
+
+### 3. Migración de datos con ID específico → guard `IF EXISTS`, reproducible desde baseline.
+Toda migración de datos one-off que referencia un ID concreto debe correr limpio desde un `db reset` vacío. En prod ya está aplicada (un `db push` no la re-corre); el guard protege el reset limpio del CI. Vale la regla global de **no hardcodear**; si hardcodeás por necesidad, que sea **con guard + comentario del porqué**.
+
+```sql
+-- MAL: el UUID no existe en una DB limpia → el baseline reset falla
+SELECT generar_cuotas_presupuesto('de40c946-...');
+
+-- BIEN: guard idempotente, skip silencioso en baseline
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM presupuestos WHERE id = 'de40c946-...') THEN
+    PERFORM generar_cuotas_presupuesto('de40c946-...');  -- backfill one-off prod (ticket X)
+  ELSE
+    RAISE NOTICE 'skip backfill: presupuesto de40c946 no existe (baseline)';
+  END IF;
+END $$;
+```
 
 ## Report
 ```
