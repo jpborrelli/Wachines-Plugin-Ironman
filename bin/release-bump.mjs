@@ -40,8 +40,10 @@ const commits = log
     const [subject, body = ""] = c.split("\x00");
     return { subject: subject.trim(), body: body.trim() };
   })
-  // Ignorá los commits que genera este mismo workflow.
-  .filter((c) => !/\[skip release\]/i.test(c.subject) && !/^chore\(release\)/i.test(c.subject));
+  // Ignorá SOLO los commits de release del propio bot, por prefijo exacto.
+  // (No filtres por mención de "[skip release]": un commit que hable del marcador
+  // en su texto no es un commit del bot y debe contar para el bump.)
+  .filter((c) => !/^chore\(release\)/i.test(c.subject));
 
 const out = (k, v) => {
   if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `${k}=${v}\n`);
