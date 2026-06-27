@@ -52,10 +52,18 @@ off). To get hands-off updates, declare the marketplace with `autoUpdate` in you
 ```
 
 Updates follow the plugin's `version` (in `.claude-plugin/plugin.json`). **You don't bump it by
-hand** — a GitHub Action ([`.github/workflows/release.yml`](.github/workflows/release.yml)) bumps
-it on every push to `main`, derived from your Conventional Commits (`feat` → minor, `fix` → patch,
-`!`/BREAKING → major), updates the `CHANGELOG.md`, and tags the release. Merge a PR as usual and
-the team picks up the new version at their next startup. Manual update any time:
+hand** — a GitHub Action ([`.github/workflows/release.yml`](.github/workflows/release.yml)) computes
+the bump on every push to `main`, derived from your Conventional Commits (`feat` → minor, `fix` →
+patch, `!`/BREAKING → major), updates the `CHANGELOG.md`, and tags the release. Merge a PR as usual
+and the team picks up the new version at their next startup.
+
+> **One-time setup — `RELEASE_TOKEN`.** `main` is protected by an org ruleset that requires PRs, and
+> the default `GITHUB_TOKEN` can't bypass it, so the Action needs a **fine-grained PAT of an org
+> admin** (`contents: write` on this repo) stored as the `RELEASE_TOKEN` secret (Settings → Secrets
+> → Actions). Org admins are in the ruleset's bypass list, so the bump push goes through. Without
+> the secret the Action still runs green and just logs the pending version (no bump is applied).
+
+Manual update any time:
 `claude plugin marketplace update wachines && claude plugin update wachines-skills` (restart to apply).
 
 ### Codex & other agents → individual skills (`npx skills`)

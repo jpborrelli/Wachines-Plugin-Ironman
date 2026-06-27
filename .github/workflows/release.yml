@@ -43,18 +43,28 @@ jobs:
         if: ${{ steps.bump.outputs.bumped == 'true' }}
         run: node -e "JSON.parse(require('fs').readFileSync('.claude-plugin/plugin.json','utf8'))" && echo "plugin.json OK"
 
+      # main está protegida por un ruleset org que exige PR (el GITHUB_TOKEN no
+      # bypassea). Para pushear el bump directo hace falta un PAT de un admin de
+      # la org (OrganizationAdmin SÍ está en el bypass del ruleset), guardado como
+      # secret RELEASE_TOKEN. Si no está, no fallamos: logueamos el bump pendiente.
       - name: Commitear bump + tag
         if: ${{ steps.bump.outputs.bumped == 'true' }}
         env:
           V: ${{ steps.bump.outputs.version }}
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
+          if [ -z "$RELEASE_TOKEN" ]; then
+            echo "::notice title=Release pendiente::Bump v${V} calculado pero NO aplicado: falta el secret RELEASE_TOKEN (PAT fine-grained de un admin de la org, contents:write). main está protegida por un ruleset org que exige PR y el GITHUB_TOKEN no lo bypassea. Configuralo en Settings → Secrets → Actions, o pasá al flujo release-PR (ver README)."
+            exit 0
+          fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .claude-plugin/plugin.json CHANGELOG.md
           git commit -m "chore(release): wachines-skills v${V}"
           git tag "wachines-skills--v${V}"
-          git push origin HEAD:main
-          git push origin "wachines-skills--v${V}"
+          git push "https://x-access-token:${RELEASE_TOKEN}@github.com/${REPO}" HEAD:main
+          git push "https://x-access-token:${RELEASE_TOKEN}@github.com/${REPO}" "wachines-skills--v${V}"
 
       - name: Tag baseline (primer run, sin bump)
         if: ${{ steps.bump.outputs.baseline == 'true' }}
