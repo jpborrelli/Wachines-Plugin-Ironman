@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.3.0 — 2026-06-27
+
+- feat(fabrica): pinear agent-browser (vendor vercel-labs) con auto-update (#24)
+
 ## 0.2.0 — 2026-06-27
 
 - feat(ci): pushear el bump de release con la GitHub App perennia-automerge (#23)
