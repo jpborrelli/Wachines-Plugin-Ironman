@@ -5,8 +5,12 @@ name: release
 # .claude-plugin/plugin.json + CHANGELOG y crea el tag, así el auto-update del
 # plugin (autoUpdate: true) le llega a todo el equipo en el próximo startup.
 #
-# Sin loop: los pushes hechos con GITHUB_TOKEN no disparan workflows. Igual
-# guardamos con [skip release] por las dudas.
+# main está protegida por un ruleset org que exige PR. El GITHUB_TOKEN no lo
+# bypassea, pero la GitHub App `perennia-automerge` SÍ está en el bypass del
+# ruleset → minteamos un token de esa app y pusheamos el bump con eso.
+#
+# Anti-loop: el push con token de App SÍ dispara workflows, así que el commit
+# del bot (prefijo `chore(release):`) se saltea por el `if` de abajo.
 
 on:
   push:
@@ -14,7 +18,7 @@ on:
   workflow_dispatch: {}   # permite correrlo a mano para testear
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: release
@@ -22,14 +26,20 @@ concurrency:
 
 jobs:
   release:
-    # Saltea solo los commits del propio bot (prefijo exacto), no cualquier
-    # mensaje que *mencione* el marcador. workflow_dispatch siempre corre.
     if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'chore(release):') }}
     runs-on: ubuntu-latest
     steps:
+      - name: Mintear token de la App perennia-automerge
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.AUTOMERGE_APP_ID }}
+          private-key: ${{ secrets.AUTOMERGE_APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # historia completa + tags para derivar el bump
+          fetch-depth: 0                              # historia completa + tags
+          token: ${{ steps.app-token.outputs.token }} # push con la identidad de la App (bypassa el ruleset)
 
       - uses: actions/setup-node@v4
         with:
@@ -43,35 +53,25 @@ jobs:
         if: ${{ steps.bump.outputs.bumped == 'true' }}
         run: node -e "JSON.parse(require('fs').readFileSync('.claude-plugin/plugin.json','utf8'))" && echo "plugin.json OK"
 
-      # main está protegida por un ruleset org que exige PR (el GITHUB_TOKEN no
-      # bypassea). Para pushear el bump directo hace falta un PAT de un admin de
-      # la org (OrganizationAdmin SÍ está en el bypass del ruleset), guardado como
-      # secret RELEASE_TOKEN. Si no está, no fallamos: logueamos el bump pendiente.
       - name: Commitear bump + tag
         if: ${{ steps.bump.outputs.bumped == 'true' }}
         env:
           V: ${{ steps.bump.outputs.version }}
-          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          REPO: ${{ github.repository }}
         run: |
-          if [ -z "$RELEASE_TOKEN" ]; then
-            echo "::notice title=Release pendiente::Bump v${V} calculado pero NO aplicado: falta el secret RELEASE_TOKEN (PAT fine-grained de un admin de la org, contents:write). main está protegida por un ruleset org que exige PR y el GITHUB_TOKEN no lo bypassea. Configuralo en Settings → Secrets → Actions, o pasá al flujo release-PR (ver README)."
-            exit 0
-          fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name  "perennia-automerge[bot]"
+          git config user.email "perennia-automerge[bot]@users.noreply.github.com"
           git add .claude-plugin/plugin.json CHANGELOG.md
           git commit -m "chore(release): wachines-skills v${V}"
           git tag "wachines-skills--v${V}"
-          git push "https://x-access-token:${RELEASE_TOKEN}@github.com/${REPO}" HEAD:main
-          git push "https://x-access-token:${RELEASE_TOKEN}@github.com/${REPO}" "wachines-skills--v${V}"
+          git push origin HEAD:main
+          git push origin "wachines-skills--v${V}"
 
       - name: Tag baseline (primer run, sin bump)
         if: ${{ steps.bump.outputs.baseline == 'true' }}
         env:
           V: ${{ steps.bump.outputs.version }}
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name  "perennia-automerge[bot]"
+          git config user.email "perennia-automerge[bot]@users.noreply.github.com"
           git tag "wachines-skills--v${V}"
           git push origin "wachines-skills--v${V}"

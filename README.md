@@ -57,11 +57,11 @@ the bump on every push to `main`, derived from your Conventional Commits (`feat`
 patch, `!`/BREAKING → major), updates the `CHANGELOG.md`, and tags the release. Merge a PR as usual
 and the team picks up the new version at their next startup.
 
-> **One-time setup — `RELEASE_TOKEN`.** `main` is protected by an org ruleset that requires PRs, and
-> the default `GITHUB_TOKEN` can't bypass it, so the Action needs a **fine-grained PAT of an org
-> admin** (`contents: write` on this repo) stored as the `RELEASE_TOKEN` secret (Settings → Secrets
-> → Actions). Org admins are in the ruleset's bypass list, so the bump push goes through. Without
-> the secret the Action still runs green and just logs the pending version (no bump is applied).
+> **How the bot pushes to a protected `main`.** `main` is protected by an org ruleset that requires
+> PRs, and the default `GITHUB_TOKEN` can't bypass it. The Action mints a token for the
+> **`perennia-automerge` GitHub App** (already in the ruleset's bypass list) from the org secrets
+> `AUTOMERGE_APP_ID` + `AUTOMERGE_APP_PRIVATE_KEY`, and pushes the bump with that. No per-user PAT,
+> nothing to configure — it reuses the org's existing automerge app.
 
 Manual update any time:
 `claude plugin marketplace update wachines && claude plugin update wachines-skills` (restart to apply).
