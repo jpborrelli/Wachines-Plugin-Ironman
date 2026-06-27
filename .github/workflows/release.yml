@@ -11,6 +11,7 @@ name: release
 on:
   push:
     branches: [main]
+  workflow_dispatch: {}   # permite correrlo a mano para testear
 
 permissions:
   contents: write
@@ -21,7 +22,9 @@ concurrency:
 
 jobs:
   release:
-    if: ${{ !contains(github.event.head_commit.message, '[skip release]') }}
+    # Saltea solo los commits del propio bot (prefijo exacto), no cualquier
+    # mensaje que *mencione* el marcador. workflow_dispatch siempre corre.
+    if: ${{ github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'chore(release):') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
