@@ -1,0 +1,23 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "labels": ["dependencies"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Bumpea el pin del motor de browser (agent-browser) en infra/browser/agent-browser.json contra npm.",
+      "managerFilePatterns": ["/^infra/browser/agent-browser\\.json$/"],
+      "matchStrings": ["\"pinned\":\\s*\"(?<currentValue>[^\"]+)\""],
+      "depNameTemplate": "agent-browser",
+      "datasourceTemplate": "npm"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "agent-browser es dev-tooling de QA (vendor vercel-labs): se actualiza solo con el smoke de CI como red. Cualquier bump (incl. major) auto-mergea si el smoke pasa.",
+      "matchDepNames": ["agent-browser"],
+      "automerge": true,
+      "addLabels": ["automerge"]
+    }
+  ]
+}

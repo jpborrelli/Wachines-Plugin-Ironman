@@ -1,0 +1,8 @@
+{
+  "$comment": "Motor de browser de la fábrica (wachi-qa y derivados). Vendor pineado + auto-update vía Renovate (customManager en renovate.json bumpea 'pinned' contra el datasource npm). NO es una dependencia runtime de las skills: las skills resuelven 'agent-browser' del PATH del usuario; este archivo es la fuente de verdad de QUÉ versión bendecimos y la que valida el smoke de CI.",
+  "vendor": "vercel-labs/agent-browser",
+  "npm": "agent-browser",
+  "pinned": "0.31.1",
+  "min": "0.27.0",
+  "minReason": "0.27 introduce la introspección de React (react tree/inspect/renders/suspense), requerida para auditar front React/Next. Ver Next.js 16.3 AI Improvements."
+}

@@ -1,0 +1,88 @@
+name: smoke-agent-browser
+
+# Red de seguridad del auto-update del motor de browser (agent-browser, vendor
+# vercel-labs). Cuando Renovate bumpea el pin en infra/browser/agent-browser.json,
+# este smoke instala ESA versión y ejerce los comandos que wachi-qa mapea
+# (open / snapshot -i / get / find role click / fill / console / screenshot).
+# Si un bump rompe el mapping, el smoke falla y el PR NO auto-mergea.
+
+on:
+  pull_request:
+    paths:
+      - "infra/browser/agent-browser.json"
+      - "skills/wachi-qa/**"
+      - ".github/workflows/smoke-agent-browser.yml"
+  push:
+    branches: [main]
+    paths:
+      - "infra/browser/agent-browser.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: smoke-agent-browser
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Leer pin y mínimo
+        id: pin
+        run: |
+          PINNED=$(jq -r '.pinned' infra/browser/agent-browser.json)
+          MIN=$(jq -r '.min' infra/browser/agent-browser.json)
+          echo "pinned=$PINNED" >> "$GITHUB_OUTPUT"
+          echo "min=$MIN" >> "$GITHUB_OUTPUT"
+          echo "Pin: $PINNED (mínimo bendecido: $MIN)"
+
+      - name: Instalar agent-browser pineado + Chromium
+        run: |
+          npm i -g "agent-browser@${{ steps.pin.outputs.pinned }}"
+          agent-browser install --with-deps
+
+      - name: Gate de versión (>= min)
+        run: |
+          INSTALLED=$(agent-browser --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          MIN="${{ steps.pin.outputs.min }}"
+          echo "Instalada: $INSTALLED / mínimo: $MIN"
+          # Falla si INSTALLED < MIN (orden semver vía sort -V)
+          LOWEST=$(printf '%s\n%s\n' "$INSTALLED" "$MIN" | sort -V | head -1)
+          if [ "$LOWEST" != "$MIN" ] && [ "$INSTALLED" != "$MIN" ]; then
+            echo "::error::agent-browser $INSTALLED es menor que el mínimo $MIN"; exit 1
+          fi
+
+      - name: Fixture HTML
+        run: |
+          mkdir -p /tmp/fx
+          cat > /tmp/fx/index.html <<'HTML'
+          <!doctype html><html><head><meta charset="utf-8"><title>smoke</title></head>
+          <body>
+            <h1>Wachi smoke</h1>
+            <input id="email" placeholder="email" />
+            <button id="go" onclick="document.getElementById('out').textContent='clicked'">Guardar</button>
+            <p id="out">idle</p>
+          </body></html>
+          HTML
+
+      - name: Ejercer el mapping de wachi-qa
+        run: |
+          set -euo pipefail
+          U="file:///tmp/fx/index.html"
+          agent-browser open "$U"
+          agent-browser snapshot -i
+          agent-browser get text "h1" | grep -q "Wachi smoke"
+          agent-browser fill "#email" "qa@example.com"
+          agent-browser get value "#email" | grep -q "qa@example.com"
+          agent-browser find role button click --name "Guardar" || agent-browser click "#go"
+          agent-browser get text "#out" | grep -q "clicked"
+          agent-browser console
+          agent-browser screenshot /tmp/fx/shot.png
+          test -s /tmp/fx/shot.png
+          agent-browser close
+          echo "Mapping OK: open/snapshot/get/fill/find-click/console/screenshot funcionan en ${{ steps.pin.outputs.pinned }}"

@@ -3,7 +3,7 @@ name: wachi-qa
 description: QA funcional de front de la fábrica Perennia x Ruuts. Prueba una app web como un usuario real exigente con NUESTRO motor (agent-browser) y NUESTRO arranque local (portless / npm run dev) — toca todos los botones, llena forms con casos vacío/inválido/edge, recorre flujos, verifica estados (empty/loading/error/overflow), mira la consola tras cada interacción, prueba responsive, con screenshot por hallazgo. Calcula un health score 0-100, triagea por severidad, arregla en source con commits atómicos y re-verifica. Use cuando el usuario diga "qa", "probá la app", "testeá esto", "buscá bugs", "qa funcional", "/wachi-qa", o cuando diga que un feature está listo o pregunte "¿esto anda?". Para modo solo-reporte (no arregla) usar el flag --report-only.
 metadata:
   author: perennia-regen
-  version: "1.2.0"
+  version: "1.3.0"
 license: MIT
 ---
 
@@ -72,7 +72,18 @@ command -v agent-browser >/dev/null 2>&1 && echo "AB: $(command -v agent-browser
 ```
 Si `MISSING`: avisá al usuario que `agent-browser` no está en el PATH ni en `/usr/local/bin/` y pará. Es nuestro motor; no hay fallback.
 
+**Gate de versión.** El pin bendecido vive en `infra/browser/agent-browser.json` (`min` + `pinned`, mantenido al día por Renovate). Chequeá que la versión instalada llegue al mínimo:
+```bash
+INSTALLED=$(agent-browser --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+MIN="0.27.0"   # o: jq -r .min "$(git rev-parse --show-toplevel)/infra/browser/agent-browser.json" desde el repo de skills
+LOWEST=$(printf '%s\n%s\n' "$INSTALLED" "$MIN" | sort -V | head -1)
+[ "$LOWEST" = "$MIN" ] || [ "$INSTALLED" = "$MIN" ] && echo "AB OK ($INSTALLED)" || echo "AB VIEJO ($INSTALLED < $MIN)"
+```
+Si está por debajo de `0.27`: avisá que falta `npm i -g agent-browser@latest` (0.27+ trae la introspección de React) y seguí en modo degradado (sin los comandos `react *`).
+
 Confirmá los comandos con `agent-browser --help` si dudás del mapeo. La tabla de equivalencias `gstack $B → agent-browser` vive en `references/agent-browser-mapping.md`.
+
+> **Front React/Next (0.27+):** cuando el framework sea React/Next, además del snapshot de accesibilidad tenés introspección de React: `agent-browser react tree` (árbol de componentes), `react inspect <fiberId>` (props/hooks/state), `react renders start|stop` (profiling de re-render), `react suspense --only-dynamic --json` (qué boundary bloquea). Requieren lanzar con `--enable react-devtools`. Útiles para diagnosticar por qué un componente no actualiza, re-renders de más, o un Suspense que no resuelve.
 
 ### 1.2.5 Asegurar el runtime de Node
 Si el repo declara una versión de Node (`.nvmrc` o `engines.node` en `package.json`), compará con `node --version`. Si no matchea y hay `nvm`, alineá antes de arrancar el dev server.
