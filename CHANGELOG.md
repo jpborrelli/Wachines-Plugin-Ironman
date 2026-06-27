@@ -5,6 +5,13 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.2.0 — 2026-06-27
+
+- feat(ci): pushear el bump de release con la GitHub App perennia-automerge (#23)
+- fix(ci): gate del push de release tras RELEASE_TOKEN (main protegida por ruleset org) (#22)
+- fix(ci): filtro del bump por prefijo exacto, no por mención del marcador (#21)
+- fix(ci): quitar [skip release] redundante del commit del bot (#20)
+
 ## 0.1.0
 
 - **Repo is now a Claude Code plugin + marketplace** (`.claude-plugin/`). One install brings all
