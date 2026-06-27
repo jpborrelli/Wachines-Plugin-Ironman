@@ -51,7 +51,7 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .claude-plugin/plugin.json CHANGELOG.md
-          git commit -m "chore(release): wachines-skills v${V} [skip release]"
+          git commit -m "chore(release): wachines-skills v${V}"
           git tag "wachines-skills--v${V}"
           git push origin HEAD:main
           git push origin "wachines-skills--v${V}"
