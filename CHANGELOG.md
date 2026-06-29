@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.3.2 — 2026-06-29
+
+- chore(deps): update actions/checkout action to v7 (#26)
+
 ## 0.3.1 — 2026-06-27
 
 - chore(renovate): mode full — salir de Silent y crear PRs (#25)
