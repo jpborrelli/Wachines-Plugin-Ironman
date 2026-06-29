@@ -61,10 +61,10 @@ jobs:
           git config user.name  "perennia-automerge[bot]"
           git config user.email "perennia-automerge[bot]@users.noreply.github.com"
           git add .claude-plugin/plugin.json CHANGELOG.md
-          git commit -m "chore(release): wachines-skills v${V}"
-          git tag "wachines-skills--v${V}"
+          git commit -m "chore(release): Wachines-Plugin-Ironman v${V}"
+          git tag "Wachines-Plugin-Ironman--v${V}"
           git push origin HEAD:main
-          git push origin "wachines-skills--v${V}"
+          git push origin "Wachines-Plugin-Ironman--v${V}"
 
       - name: Tag baseline (primer run, sin bump)
         if: ${{ steps.bump.outputs.baseline == 'true' }}
@@ -73,5 +73,5 @@ jobs:
         run: |
           git config user.name  "perennia-automerge[bot]"
           git config user.email "perennia-automerge[bot]@users.noreply.github.com"
-          git tag "wachines-skills--v${V}"
-          git push origin "wachines-skills--v${V}"
+          git tag "Wachines-Plugin-Ironman--v${V}"
+          git push origin "Wachines-Plugin-Ironman--v${V}"

@@ -19,12 +19,12 @@ licenses are preserved below and in each skill's frontmatter.
 
 | Item | Author | License |
 |------|--------|---------|
-| `db-reviewer` (skill + agent) | perennia-regen | MIT |
-| `docs-architect` (skill + agent) | perennia-regen | MIT |
-| `security-reviewer` (skill + agent) | perennia-regen | MIT |
-| `tanstack-query-hooks` (skill) | perennia-regen | MIT |
-| `html-perennia` (skill) | perennia-regen | MIT |
-| `agent-readiness` (skill) | perennia-regen | MIT — methodology © [Factory.ai](https://factory.ai/news/agent-readiness) (Agent Readiness), credited in-skill; scanner is original |
+| `db-reviewer` (skill + agent) | Perennia-Regeneracion | MIT |
+| `docs-architect` (skill + agent) | Perennia-Regeneracion | MIT |
+| `security-reviewer` (skill + agent) | Perennia-Regeneracion | MIT |
+| `tanstack-query-hooks` (skill) | Perennia-Regeneracion | MIT |
+| `html-perennia` (skill) | Perennia-Regeneracion | MIT |
+| `agent-readiness` (skill) | Perennia-Regeneracion | MIT — methodology © [Factory.ai](https://factory.ai/news/agent-readiness) (Agent Readiness), credited in-skill; scanner is original |
 
 Most were generalized from internal tools — references to private domains, table names, people,
 and infrastructure were removed so they are reusable in any project. `html-perennia` is the one

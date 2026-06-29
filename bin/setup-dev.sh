@@ -56,7 +56,7 @@ else
   fi
 fi
 
-# --- 2a. wachines-skills en Claude Code: PLUGIN nativo (auto-update al startup) -----
+# --- 2a. Wachines-Plugin-Ironman en Claude Code: PLUGIN nativo (auto-update al startup) -----
 # Claude Code soporta plugins; preferimos el plugin sobre npx porque trae TODAS las skills
 # + los subagentes (db-architect, frontend-specialist, db-reviewer, security-reviewer) en una
 # sola instalación, y se auto-actualiza solo al iniciar sesión (equivalente nativo del
@@ -79,10 +79,10 @@ if printf '%s ' $AGENTS | grep -qw claude-code; then
         fs.writeFileSync(f, JSON.stringify(s,null,2)+"\n");
       ' || warn "no pude setear autoUpdate del plugin en settings.json"
     fi
-    claude plugin install wachines-skills@wachines --scope user >/dev/null 2>&1 \
-      || warn "no pude instalar el plugin wachines-skills (¿ya mergeado en main?)"
+    claude plugin install Wachines-Plugin-Ironman@wachines --scope user >/dev/null 2>&1 \
+      || warn "no pude instalar el plugin Wachines-Plugin-Ironman (¿ya mergeado en main?)"
   else
-    warn "Claude Code CLI no está en PATH; salteo el plugin wachines-skills."
+    warn "Claude Code CLI no está en PATH; salteo el plugin Wachines-Plugin-Ironman."
   fi
 fi
 
@@ -91,12 +91,12 @@ if have npx; then
   # -g = global (user-level): cae en el directorio user-level del agente y aplica a TODOS los
   # proyectos. Sin -g, el CLI auto-detecta "project si estás dentro de un repo".
   for agent in $AGENTS; do
-    # Claude Code ya recibe wachines-skills por el plugin (sección 2a) → no lo dupliques por npx.
+    # Claude Code ya recibe Wachines-Plugin-Ironman por el plugin (sección 2a) → no lo dupliques por npx.
     if [ "$agent" != "claude-code" ]; then
-      say "Instalando wachines-skills core (dev) para $(agent_label "$agent") — global"
+      say "Instalando Wachines-Plugin-Ironman core (dev) para $(agent_label "$agent") — global"
       # Instalamos solo el set core para no pisar skills con nombres compartidos
       # (html-perennia, supabase/vercel/web-design) que pueden venir de perennia-skills u otros upstreams.
-      npx -y skills add perennia-regen/wachines-skills -g -a "$agent" --skill $WACHINES_CORE_SKILLS || warn "falló wachines-skills para $agent"
+      npx -y skills add Perennia-Regeneracion/Wachines-Plugin-Ironman -g -a "$agent" --skill $WACHINES_CORE_SKILLS || warn "falló Wachines-Plugin-Ironman para $agent"
     fi
 
     say "Instalando gokapso/agent-skills (WhatsApp/Kapso) para $(agent_label "$agent") — global"
@@ -106,13 +106,13 @@ if have npx; then
     npx -y skills add vercel/chat -g -a "$agent" || warn "falló vercel/chat para $agent"
 
     if [ "${PERENNIA_BIZ:-}" = "1" ]; then
-      say "Instalando perennia-skills (negocio) para $(agent_label "$agent") — privado, global"
-      npx -y skills add perennia-regen/perennia-skills -g -a "$agent" || warn "falló perennia-skills para $agent (¿auth gh?)"
+      say "Instalando perennIAR (negocio) para $(agent_label "$agent") — privado, global"
+      npx -y skills add Perennia-Regeneracion/perennIAR -g -a "$agent" || warn "falló perennIAR para $agent (¿auth gh?)"
     fi
   done
 
   if [ "${PERENNIA_BIZ:-}" != "1" ]; then
-    printf "\n   (equipo comercial: corré 'PERENNIA_BIZ=1 %s' para sumar perennia-skills)\n" "$0"
+    printf "\n   (equipo comercial: corré 'PERENNIA_BIZ=1 %s' para sumar perennIAR)\n" "$0"
   fi
 fi
 
@@ -205,7 +205,9 @@ EOF
     warn "ENGRAM_CLOUD_TOKEN no está seteado; Engram queda local/MCP. Para colaborar, configurá cloud y re-ejecutá."
   fi
 else
-  warn "Engram no está instalado. Instalalo con Gentle AI o Homebrew y re-ejecutá este script."
+  warn "Engram no está instalado. Instalalo con:"
+  warn "  brew install gentleman-programming/tap/engram"
+  warn "Re-ejecutá este script después."
 fi
 
 say "Listo. Verificá con: claude plugin list | npx skills list -g | codex mcp list | engram projects list"

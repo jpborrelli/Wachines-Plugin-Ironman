@@ -3,7 +3,7 @@ name: tanstack-query-hooks
 description: "Generate TanStack Query hooks for efficient server state management. Creates query hooks, mutation hooks with automatic cache invalidation, and handles loading/error states. Use when fetching data from APIs or databases in React components."
 license: MIT
 metadata:
-  author: perennia-regen
+  author: Perennia-Regeneracion
   version: "1.0.0"
 ---
 

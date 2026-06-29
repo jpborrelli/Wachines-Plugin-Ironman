@@ -3,15 +3,15 @@
   "name": "wachines",
   "description": "Wachines / Perennia software-factory marketplace for Claude Code. Curated, project-agnostic skills and subagents for shipping quality web apps and databases.",
   "owner": {
-    "name": "perennia-regen",
+    "name": "Perennia-Regeneracion",
     "url": "https://github.com/Perennia-Regeneracion"
   },
   "plugins": [
     {
-      "name": "wachines-skills",
+      "name": "Wachines-Plugin-Ironman",
       "description": "Software factory toolkit: Postgres/Supabase & React/Next best practices, SQL-migration & security reviewers, docs architect, RPC-API contract, functional front QA (wachi-qa), the wachi-fabrica orchestrator, and db/frontend/security subagents. Project-agnostic by design.",
       "author": {
-        "name": "perennia-regen"
+        "name": "Perennia-Regeneracion"
       },
       "category": "development",
       "keywords": [

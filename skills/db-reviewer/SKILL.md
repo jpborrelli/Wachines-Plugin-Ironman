@@ -2,7 +2,7 @@
 name: db-reviewer
 description: Review SQL migrations before applying them. Validates naming conventions, soft-delete filtering, COMMENT ON coverage, SECURITY DEFINER hardening, RLS policies, and Postgres performance. Use when reviewing a migration, a CREATE TABLE/FUNCTION/POLICY, or any schema change before it hits production.
 metadata:
-  author: perennia-regen
+  author: Perennia-Regeneracion
   version: "1.0.0"
 license: MIT
 ---

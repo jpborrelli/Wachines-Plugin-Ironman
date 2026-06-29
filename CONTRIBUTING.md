@@ -1,7 +1,7 @@
 # Contributing
 
 Thanks for proposing a skill! The goal of this repo is a small, high-quality, **project-agnostic**
-set of skills anyone can install with `npx skills add perennia-regen/wachines-skills`.
+set of skills anyone can install with `npx skills add Perennia-Regeneracion/Wachines-Plugin-Ironman`.
 
 ## Propose a skill (PR flow)
 
@@ -46,7 +46,7 @@ Instructions the agent follows when this skill activates.
 - **Not a runtime dependency dump.** If a skill only works with an external binary/daemon
   (the way gstack does), reference it in the README rather than vendoring broken files.
 - **Tested.** Confirm it installs cleanly:
-  `npx skills add perennia-regen/wachines-skills/<your-skill>` in a scratch directory.
+  `npx skills add Perennia-Regeneracion/Wachines-Plugin-Ironman/<your-skill>` in a scratch directory.
 
 ## Commits
 

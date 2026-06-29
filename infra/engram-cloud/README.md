@@ -18,6 +18,24 @@ Fly app for the Wachines shared Engram memory server.
 
 Never commit token values.
 
+### Generating / rotating `ENGRAM_CLOUD_TOKEN`
+
+This is the single token every developer uses to sync memories. Generate a strong random value:
+
+```bash
+openssl rand -hex 32
+```
+
+Set it on the Fly app:
+
+```bash
+fly secrets set ENGRAM_CLOUD_TOKEN=<token> --app wachines-engram-cloud
+```
+
+Then share the token with the team over a secure channel (1Password, Signal, etc.). Each developer exports it before running `setup-dev.sh` or any `engram sync --cloud` command.
+
+If you suspect the token leaked, rotate it with the same steps; clients using the old token will stop syncing until they update.
+
 ## Deploy
 
 ```bash

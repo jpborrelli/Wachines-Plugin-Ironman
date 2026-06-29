@@ -2,7 +2,7 @@
 name: agent-readiness
 description: Assess how ready a codebase is for autonomous AI coding agents — by delegating a deep investigation of each of Factory.ai's 9 readiness pillars (~80 criteria) to a dedicated subagent, then cross-referencing their reports into a pass-rate + maturity level with a prioritized, concrete fix list. Use when asked to "check agent readiness", "is this repo agent-ready", "readiness report/score", "/readiness", "how well does this repo support AI agents", or to audit a repo's dev environment for agent autonomy.
 metadata:
-  author: perennia-regen
+  author: Perennia-Regeneracion
   version: "3.0.0"
 license: MIT
 ---

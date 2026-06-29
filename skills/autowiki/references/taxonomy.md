@@ -61,5 +61,5 @@ proyecto), sin hardcodear nada en el script.
 ## Fuentes
 
 - Benchmark interno: `referencias/benchmarks/factory-wiki.md` y
-  `productos/fabrica/autowiki/benchmark-docs-2026-06-19.md` (en el repo los-wachines-sa / wachines-brain).
+  `productos/fabrica/autowiki/benchmark-docs-2026-06-19.md` (en el repo Wachines-Brain).
 - Factory: docs.factory.ai/cli/features/wiki/overview · factory.ai/product/autowiki

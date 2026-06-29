@@ -2,7 +2,7 @@
 name: wachi-fabrica
 description: 'El orquestador ("el jefe") de la software factory. Recibe un cambio — feature nuevo, bug, ajuste de UI, cambio de datos/schema, hardening, o trivial — lo CLASIFICA, elige la ruta mínima de subagentes/skills, los corre (en paralelo si los territorios son disjuntos) con gate humano y verificación, y lo lleva hasta el PR. Use cuando traés un cambio para que la fábrica lo procese, o al arrancar cualquier trabajo no-trivial que convenga rutear bien. No es un pipeline fijo: rutea según el tipo de cambio.'
 metadata:
-  author: perennia-regen
+  author: Perennia-Regeneracion
   version: "1.0.0"
 license: MIT
 ---

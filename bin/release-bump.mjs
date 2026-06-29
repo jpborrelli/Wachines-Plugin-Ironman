@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // release-bump.mjs — bump del plugin derivado de Conventional Commits.
 //
-// Lee los commits desde el último tag `wachines-skills--v*`, decide el bump
+// Lee los commits desde el último tag `Wachines-Plugin-Ironman--v*` (con fallback a los
+// tags históricos `wachines-skills--v*`), decide el bump
 // (feat → minor, fix → patch, BREAKING/`!` → major), actualiza la `version` en
 // `.claude-plugin/plugin.json` y prepende una entrada al `CHANGELOG.md`.
 //
@@ -18,16 +19,23 @@ import { execSync } from "node:child_process";
 import { readFileSync, writeFileSync, appendFileSync } from "node:fs";
 
 const DRY = process.argv.includes("--dry-run");
-const TAG_PREFIX = "wachines-skills--v";
+const TAG_PREFIX = "Wachines-Plugin-Ironman--v";
+const OLD_TAG_PREFIX = "wachines-skills--v";
 const PLUGIN_JSON = ".claude-plugin/plugin.json";
 const CHANGELOG = "CHANGELOG.md";
 
 const sh = (cmd) => execSync(cmd, { encoding: "utf8" }).trim();
 const shOk = (cmd) => { try { return sh(cmd); } catch { return ""; } };
 
-// 1. Último tag de release (si existe).
-const lastTag = shOk(`git tag --list '${TAG_PREFIX}*' --sort=-v:refname`).split("\n")[0] || "";
-const baseVersion = lastTag ? lastTag.slice(TAG_PREFIX.length) : null;
+// 1. Último tag de release (si existe). Fallback al prefix histórico para no perder
+//    continuidad de versionado tras el rename del repo.
+let lastTag = shOk(`git tag --list '${TAG_PREFIX}*' --sort=-v:refname`).split("\n")[0] || "";
+if (!lastTag) {
+  lastTag = shOk(`git tag --list '${OLD_TAG_PREFIX}*' --sort=-v:refname`).split("\n")[0] || "";
+}
+const baseVersion = lastTag
+  ? lastTag.slice(lastTag.startsWith(TAG_PREFIX) ? TAG_PREFIX.length : OLD_TAG_PREFIX.length)
+  : null;
 
 // 2. Commits desde ese tag (o todos si es el primer release).
 const range = lastTag ? `${lastTag}..HEAD` : "HEAD";

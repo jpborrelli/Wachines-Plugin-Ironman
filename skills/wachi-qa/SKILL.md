@@ -2,7 +2,7 @@
 name: wachi-qa
 description: QA funcional de front de la fábrica Perennia x Ruuts. Prueba una app web como un usuario real exigente con NUESTRO motor (agent-browser) y NUESTRO arranque local (portless / npm run dev) — toca todos los botones, llena forms con casos vacío/inválido/edge, recorre flujos, verifica estados (empty/loading/error/overflow), mira la consola tras cada interacción, prueba responsive, con screenshot por hallazgo. Calcula un health score 0-100, triagea por severidad, arregla en source con commits atómicos y re-verifica. Use cuando el usuario diga "qa", "probá la app", "testeá esto", "buscá bugs", "qa funcional", "/wachi-qa", o cuando diga que un feature está listo o pregunte "¿esto anda?". Para modo solo-reporte (no arregla) usar el flag --report-only.
 metadata:
-  author: perennia-regen
+  author: Perennia-Regeneracion
   version: "1.3.0"
 license: MIT
 ---

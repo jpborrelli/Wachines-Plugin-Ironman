@@ -1,10 +1,10 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
-  "name": "wachines-skills",
+  "name": "Wachines-Plugin-Ironman",
   "description": "Software factory toolkit for Claude Code: Postgres/Supabase & React/Next best practices, SQL-migration & security reviewers, docs architect, RPC-API contract, functional front QA, and the wachi-fabrica orchestrator — plus db/frontend/security subagents. Project-agnostic.",
   "version": "0.3.2",
   "author": {
-    "name": "perennia-regen",
+    "name": "Perennia-Regeneracion",
     "url": "https://github.com/Perennia-Regeneracion"
   },
   "homepage": "https://github.com/Perennia-Regeneracion/Wachines-Plugin-Ironman",

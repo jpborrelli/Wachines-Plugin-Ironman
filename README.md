@@ -1,15 +1,17 @@
-# wachines-skills
+# Wachines-Plugin-Ironman
 
 A curated, installable set of [Agent Skills](https://github.com/vercel-labs/skills) for
 Claude Code (and any agent that supports the open Skills standard). Hand-picked tools for
 shipping quality web apps and databases: Postgres/Supabase best practices, React/Next.js
 performance, a SQL-migration reviewer, and a documentation architect.
 
+Formerly `wachines-skills` (renamed to match the `Wachines-Plugin-Ironman` repository).
+
 Project-agnostic by design — no company-, domain-, or schema-specific content. Add the ones
 you want, contribute the ones you wish existed.
 
 > **¿Sos del equipo? Empezá por [SETUP.md](SETUP.md)** — instala todo el toolchain dev
-> (gstack + wachines-skills + gokapso), registra Engram para Claude Code/Codex y deja listo el
+> (gstack + Wachines-Plugin-Ironman + gokapso), registra Engram para Claude Code/Codex y deja listo el
 > camino de Engram cloud. Las skills se instalan desde repos centralizados, no se editan dentro de
 > cada proyecto.
 
@@ -29,7 +31,7 @@ the `db-architect` / `frontend-specialist` / `db-reviewer` / `security-reviewer`
 claude plugin marketplace add Perennia-Regeneracion/Wachines-Plugin-Ironman
 
 # install the plugin (skills + subagents auto-discovered)
-claude plugin install wachines-skills@wachines
+claude plugin install Wachines-Plugin-Ironman@wachines
 ```
 
 Or interactively inside Claude Code: `/plugin marketplace add Perennia-Regeneracion/Wachines-Plugin-Ironman`
@@ -64,7 +66,7 @@ and the team picks up the new version at their next startup.
 > nothing to configure — it reuses the org's existing automerge app.
 
 Manual update any time:
-`claude plugin marketplace update wachines && claude plugin update wachines-skills` (restart to apply).
+`claude plugin marketplace update wachines && claude plugin update Wachines-Plugin-Ironman` (restart to apply).
 
 ### Codex & other agents → individual skills (`npx skills`)
 
@@ -72,13 +74,13 @@ Requires Node.js. Install all skills, or pick individual ones:
 
 ```bash
 # everything
-npx skills add perennia-regen/wachines-skills
+npx skills add Perennia-Regeneracion/Wachines-Plugin-Ironman
 
 # Codex explicit
-npx skills add perennia-regen/wachines-skills -g -a codex
+npx skills add Perennia-Regeneracion/Wachines-Plugin-Ironman -g -a codex
 
 # or a single skill
-npx skills add perennia-regen/wachines-skills/db-reviewer
+npx skills add Perennia-Regeneracion/Wachines-Plugin-Ironman/db-reviewer
 ```
 
 The [`skills` CLI](https://github.com/vercel-labs/skills) drops each skill into your agent's
@@ -94,15 +96,15 @@ have with `npx skills list`; search with `npx skills find <query>`.
 | [`next-best-practices`](skills/next-best-practices) | Next.js conventions: RSC boundaries, data patterns, async APIs, metadata, route handlers, image/font | Compiled from Next.js docs · MIT |
 | [`web-design-guidelines`](skills/web-design-guidelines) | Reviews UI code for accessibility & Web Interface Guidelines compliance (fetches the live guidelines) | Vercel · MIT |
 | [`frontend-design`](skills/frontend-design) | Builds distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics | Anthropic · Apache-2.0 |
-| [`html-perennia`](skills/html-perennia) | Prefer HTML over markdown for human-readable artifacts (plans, reviews, wireframes), with a cohesive earth-green palette | perennia-regen · MIT |
-| [`tanstack-query-hooks`](skills/tanstack-query-hooks) | Generates TanStack Query hooks: query/mutation hooks, automatic cache invalidation, loading/error states | perennia-regen · MIT |
-| [`db-reviewer`](skills/db-reviewer) | Reviews SQL migrations: naming, soft delete, `COMMENT ON`, `SECURITY DEFINER`, RLS, performance | perennia-regen · MIT |
-| [`security-reviewer`](skills/security-reviewer) | Reviews code for OWASP Top 10: injection, XSS, broken auth, secrets, insecure data (+ Supabase checks) | perennia-regen · MIT |
-| [`docs-architect`](skills/docs-architect) | Audits/creates/reorganizes docs; detects drift between docs and code; enforces a Diátaxis+ADR taxonomy and generated-vs-authored anti-drift rules ([doc-conventions](skills/docs-architect/references/doc-conventions.md)); parallel sub-agent audits | perennia-regen · MIT |
-| [`rpc-api-contract`](skills/rpc-api-contract) | Standard for exposing business logic as a uniform agent-operable API: `api` schema, `{data,effects,warnings}` envelope, RFC 7807 errors, Idempotency-Key, SECURITY DEFINER, preview/confirm | perennia-regen · MIT |
+| [`html-perennia`](skills/html-perennia) | Prefer HTML over markdown for human-readable artifacts (plans, reviews, wireframes), with a cohesive earth-green palette | Perennia-Regeneracion · MIT |
+| [`tanstack-query-hooks`](skills/tanstack-query-hooks) | Generates TanStack Query hooks: query/mutation hooks, automatic cache invalidation, loading/error states | Perennia-Regeneracion · MIT |
+| [`db-reviewer`](skills/db-reviewer) | Reviews SQL migrations: naming, soft delete, `COMMENT ON`, `SECURITY DEFINER`, RLS, performance | Perennia-Regeneracion · MIT |
+| [`security-reviewer`](skills/security-reviewer) | Reviews code for OWASP Top 10: injection, XSS, broken auth, secrets, insecure data (+ Supabase checks) | Perennia-Regeneracion · MIT |
+| [`docs-architect`](skills/docs-architect) | Audits/creates/reorganizes docs; detects drift between docs and code; enforces a Diátaxis+ADR taxonomy and generated-vs-authored anti-drift rules ([doc-conventions](skills/docs-architect/references/doc-conventions.md)); parallel sub-agent audits | Perennia-Regeneracion · MIT |
+| [`rpc-api-contract`](skills/rpc-api-contract) | Standard for exposing business logic as a uniform agent-operable API: `api` schema, `{data,effects,warnings}` envelope, RFC 7807 errors, Idempotency-Key, SECURITY DEFINER, preview/confirm | Perennia-Regeneracion · MIT |
 | [`eve`](skills/eve) | Build/edit/debug agents on the eve framework — defers to the version-locked bundled docs (`node_modules/eve/docs`) as the source of truth so guidance never drifts from the installed version | Vercel · Apache-2.0 |
-| [`wachi-fabrica`](skills/wachi-fabrica) | El orquestador ("el jefe") de la software factory: clasifica un cambio y rutea la ruta mínima de subagentes/skills hasta el PR | perennia-regen · MIT |
-| [`wachi-qa`](skills/wachi-qa) | QA funcional de front con motor `agent-browser` + arranque local `portless`/`npm run dev`: prueba como usuario real exigente (botones, forms vacío/inválido/edge, estados, consola, responsive), health score 0-100, arregla en source con commits atómicos. Modo `--report-only` | perennia-regen · MIT |
+| [`wachi-fabrica`](skills/wachi-fabrica) | El orquestador ("el jefe") de la software factory: clasifica un cambio y rutea la ruta mínima de subagentes/skills hasta el PR | Perennia-Regeneracion · MIT |
+| [`wachi-qa`](skills/wachi-qa) | QA funcional de front con motor `agent-browser` + arranque local `portless`/`npm run dev`: prueba como usuario real exigente (botones, forms vacío/inválido/edge, estados, consola, responsive), health score 0-100, arregla en source con commits atómicos. Modo `--report-only` | Perennia-Regeneracion · MIT |
 
 `db-reviewer`, `docs-architect` and `security-reviewer` are also provided as **subagents** in
 [`agents/`](agents) for users who prefer the Claude Code subagent form — copy them into your

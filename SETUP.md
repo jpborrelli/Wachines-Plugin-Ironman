@@ -7,48 +7,59 @@
 ## TL;DR — un comando
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/perennia-regen/wachines-skills/main/bin/setup-dev.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/Perennia-Regeneracion/Wachines-Plugin-Ironman/main/bin/setup-dev.sh)
 ```
 
-Esto instala: **gstack** (browse/QA/plan/review/ship), **wachines-skills** (best-practices,
+Esto instala: **gstack** (browse/QA/plan/review/ship), **Wachines-Plugin-Ironman** (best-practices,
 reviewers, docs), **gokapso/agent-skills** (WhatsApp/Kapso) y registra **Engram** como MCP en
 Claude Code y Codex cuando esos CLIs existen. Si sos del equipo comercial, sumá también
-**perennia-skills** (ver abajo).
+**perennIAR** (ver abajo).
 
-> **wachines-skills se instala distinto según el agente:**
+> **Wachines-Plugin-Ironman se instala distinto según el agente:**
 > - **Claude Code → como plugin.** El script registra el marketplace `wachines` con
->   `autoUpdate: true` en tu `~/.claude/settings.json` e instala el plugin `wachines-skills`
+>   `autoUpdate: true` en tu `~/.claude/settings.json` e instala el plugin `Wachines-Plugin-Ironman`
 >   (todas las skills **+ los subagentes** `db-architect`/`frontend-specialist`/`db-reviewer`/`security-reviewer`).
 >   Se **auto-actualiza solo al iniciar sesión** — no corras nada (es el equivalente nativo del
 >   `auto_upgrade` de gstack; no se dispara "al usar una skill", sino en cada startup).
 > - **Codex / otros agentes → vía `npx skills`** (no soportan plugins de Claude Code).
 >
-> Update manual cuando quieras: `claude plugin marketplace update wachines && claude plugin update wachines-skills`
+> Update manual cuando quieras: `claude plugin marketplace update wachines && claude plugin update Wachines-Plugin-Ironman`
 > (aplica al reiniciar). Para apagar el auto-update, poné `"autoUpdate": false` en esa entrada.
 
 Por defecto instala skills para `claude-code` y `codex`. Para limitarlo:
 
 ```bash
-WACHINES_AGENTS=codex bash <(curl -fsSL https://raw.githubusercontent.com/perennia-regen/wachines-skills/main/bin/setup-dev.sh)
+WACHINES_AGENTS=codex bash <(curl -fsSL https://raw.githubusercontent.com/Perennia-Regeneracion/Wachines-Plugin-Ironman/main/bin/setup-dev.sh)
 ```
+
+## Engram — instalar el CLI
+
+Engram es un binario de Gentleman Programming. En macOS lo más fácil es Homebrew:
+
+```bash
+brew install gentleman-programming/tap/engram
+engram version
+```
+
+Sin Homebrew se puede bajar el binario desde [Gentleman-Programming/engram](https://github.com/Gentleman-Programming/engram/releases).
 
 ## Engram cloud — memoria colaborativa del equipo tech
 
 Engram es la memoria fina de código de cada repo. Para colaborar entre devs, el modo recomendado
 es **cloud-first**:
 
-1. El admin del equipo entrega `ENGRAM_CLOUD_TOKEN`.
-2. El dev corre el bootstrap con esas variables.
-3. El bootstrap registra el MCP `engram`, importa `.engram/` si el repo trae chunks versionados,
-   enrola los proyectos, ejecuta `engram sync --cloud --project <project>` y deja `engram serve`
+1. El admin del equipo entrega `ENGRAM_CLOUD_TOKEN` (un bearer token compartido, uno solo para todo el equipo).
+2. El dev corre el bootstrap con ese token y `ENGRAM_CLOUD_SERVER`.
+3. El bootstrap registra el MCP `engram`, enrola los proyectos y ejecuta `engram sync --cloud --project <project>`.
+   Eso trae las memorias que ya existen en el server al disco local (`~/.engram/`) y deja `engram serve`
    corriendo por launchd en macOS. El token se pasa al entorno de usuario con `launchctl setenv`;
-   no se guarda en el repo.
+   **no se guarda en el repo**.
 
 Ejemplo:
 
 ```bash
 export ENGRAM_CLOUD_TOKEN="<token-del-dev>"
-bash <(curl -fsSL https://raw.githubusercontent.com/perennia-regen/wachines-skills/main/bin/setup-dev.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/Perennia-Regeneracion/Wachines-Plugin-Ironman/main/bin/setup-dev.sh)
 ```
 
 El server compartido por default es `https://wachines-engram-cloud.fly.dev`. Si necesitás apuntar
@@ -74,15 +85,38 @@ launchctl print "gui/$(id -u)/dev.engram.serve" | head
 Si no hay token cloud, el bootstrap no falla: deja Engram local + MCP. Eso sirve para una máquina,
 pero **no alcanza para colaboración real**.
 
+### Cómo unirse a las memorias que ya están en el server
+
+Si vos ya subiste memorias al cloud, un nuevo dev solo necesita:
+
+```bash
+export ENGRAM_CLOUD_SERVER="https://wachines-engram-cloud.fly.dev"
+export ENGRAM_CLOUD_TOKEN="<token-que-te-pasa-el-admin>"
+bash <(curl -fsSL https://raw.githubusercontent.com/Perennia-Regeneracion/Wachines-Plugin-Ironman/main/bin/setup-dev.sh)
+```
+
+El script va a detectar los repos en `~/Documents/BackOffice`, `~/Documents/reporteGrass` y
+`~/Documents/gestionganadera`, hacer `engram cloud enroll <project>` y `engram sync --cloud --project <project>`
+para bajar lo que haya en el server. Si un repo no existe localmente, simplemente lo saltea.
+
+Para forzar un proyecto que no está en la lista conocida:
+
+```bash
+engram cloud config --server "https://wachines-engram-cloud.fly.dev"
+export ENGRAM_CLOUD_TOKEN="<token>"
+engram cloud enroll nombre-del-proyecto
+engram sync --cloud --project nombre-del-proyecto
+```
+
 ## Qué se instala y de dónde
 
 | Toolkit | Qué trae | Cómo se instala | Quién lo mantiene |
 |---------|----------|-----------------|-------------------|
 | **gstack** | browse, qa, plan-*, review, ship, investigate, cso, design-* (~53) | `git clone … ~/.claude/skills/gstack && ./setup` (necesita [Bun](https://bun.sh) v1+) | upstream (garrytan/gstack) |
-| **wachines-skills** | db-reviewer, docs-architect, frontend-design, *-best-practices, security-reviewer | `npx skills add perennia-regen/wachines-skills` | equipo wachines |
+| **Wachines-Plugin-Ironman** | db-reviewer, docs-architect, frontend-design, *-best-practices, security-reviewer | `npx skills add Perennia-Regeneracion/Wachines-Plugin-Ironman` | equipo wachines |
 | **gokapso/agent-skills** | integrate/automate/observe WhatsApp (Kapso) | `npx skills add gokapso/agent-skills` (necesita cuenta Kapso) | upstream (gokapso) |
 | **vercel/chat** | Chat SDK: bots multi-plataforma (Slack/WhatsApp/Discord/…) sobre AI SDK | `npx skills add vercel/chat` | upstream (Vercel) |
-| **perennia-skills** (privado) | minuta, prep-reunion, coaching-comercial, html-perennia | `npx skills add perennia-regen/perennia-skills` | equipo Perennia (negocio) |
+| **perennIAR** (privado) | minuta, prep-reunion, coaching-comercial, html-perennia | `npx skills add Perennia-Regeneracion/perennIAR` | equipo Perennia (negocio) |
 | **Engram** | memoria de código por repo + SDD artifacts | `engram mcp --tools=agent` + `engram sync --cloud` | Gentle AI |
 
 ## Manual (si el script falla)
@@ -94,9 +128,9 @@ git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.cl
 
 # 2. skills de desarrollo core (wachines) — -g = global (todos los proyectos)
 # No instalamos "*" por default: hay nombres compartidos con perennia/upstreams.
-npx skills add perennia-regen/wachines-skills -g -a codex \
+npx skills add Perennia-Regeneracion/Wachines-Plugin-Ironman -g -a codex \
   --skill db-reviewer docs-architect frontend-design next-best-practices security-reviewer tanstack-query-hooks
-npx skills add perennia-regen/wachines-skills -g -a claude-code \
+npx skills add Perennia-Regeneracion/Wachines-Plugin-Ironman -g -a claude-code \
   --skill db-reviewer docs-architect frontend-design next-best-practices security-reviewer tanstack-query-hooks
 
 # 3. WhatsApp/Kapso (si trabajás con BackOffice)
@@ -108,8 +142,8 @@ npx skills add vercel/chat -g -a codex
 npx skills add vercel/chat -g -a claude-code
 
 # 4. skills comerciales (solo equipo de negocio)
-npx skills add perennia-regen/perennia-skills -g -a codex
-npx skills add perennia-regen/perennia-skills -g -a claude-code
+npx skills add Perennia-Regeneracion/perennIAR -g -a codex
+npx skills add Perennia-Regeneracion/perennIAR -g -a claude-code
 
 # 5. Engram MCP para Codex
 codex mcp add engram -- "$(command -v engram)" mcp --tools=agent
@@ -155,7 +189,7 @@ que `node_modules`).
 
 - ✅ **Usar una skill** → ya la tenés instalada del toolchain. Nada que hacer.
 - ✅ **Mejorar o agregar una skill** → abrí una **branch** en el repo de skills que corresponda
-  (`wachines-skills` para dev, `perennia-skills` para negocio) y mandá un **PR**. No la edites
+  (`Wachines-Plugin-Ironman` para dev, `perennIAR` para negocio) y mandá un **PR**. No la edites
   en el `.claude/skills/` de un proyecto: ese cambio no se comparte y se pierde al actualizar.
 - ✅ **Skill específica de un proyecto** (acoplada a su app/datos) → esa sí vive en el proyecto
   (`reunion-usuario` en gestión ganadera, pipeline de presupuestos en BackOffice). Está tracked

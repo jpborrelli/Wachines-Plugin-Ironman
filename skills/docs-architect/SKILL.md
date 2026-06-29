@@ -2,7 +2,7 @@
 name: docs-architect
 description: Audit, create, update, reorganize, or improve documentation in a repository. Detects stale docs out of sync with code, finds undocumented features/APIs, restructures doc folders, fixes broken links, and runs comprehensive documentation reviews. Use when asked to review the docs, document a feature, check if docs are up to date, or reorganize documentation.
 metadata:
-  author: perennia-regen
+  author: Perennia-Regeneracion
   version: "1.1.0"
 license: MIT
 ---

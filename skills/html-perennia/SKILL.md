@@ -13,7 +13,7 @@ description: >-
   leer, validar o compartir.
 license: MIT
 metadata:
-  author: perennia-regen
+  author: Perennia-Regeneracion
   version: "1.2.0"
 ---
 

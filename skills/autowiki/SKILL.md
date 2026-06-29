@@ -2,7 +2,7 @@
 name: autowiki
 description: Genera y mantiene la documentación de referencia GENERADA de un repo (By the Numbers, mapa del repo, inventarios de funciones/migraciones/edge-functions/rutas) computándola del código con un generador determinístico, y la cablea a CI (check en PR). Sigue la taxonomía AutoWiki de Factory.ai (doc = build artifact). Usar cuando se pida instalar/regenerar docs generadas, "documentación que no envejece", un wiki del codebase, o cablear generación de docs en CI. Complementa a docs-architect (que audita la doc AUTHORED escrita a mano).
 metadata:
-  author: perennia-regen
+  author: Perennia-Regeneracion
   version: "1.0.0"
 license: MIT
 ---

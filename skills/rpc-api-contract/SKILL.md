@@ -2,7 +2,7 @@
 name: rpc-api-contract
 description: Standard for exposing business logic as a uniform, agent-operable API. Postgres business actions live under a dedicated `api` schema with a fixed success envelope ({data, effects, warnings}), RFC 7807 errors, mandatory Idempotency-Key on mutations, SECURITY DEFINER auth, and preview/confirm for heavy ops. Use when creating or exposing a business action / RPC / api endpoint / MCP tool, or when reviewing one. Forward-only from 2026-06-16.
 metadata:
-  author: perennia-regen
+  author: Perennia-Regeneracion
   version: "1.0.0"
 license: MIT
 ---

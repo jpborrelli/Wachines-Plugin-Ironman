@@ -2,7 +2,7 @@
 name: security-reviewer
 description: Review code for OWASP Top 10 vulnerabilities — SQL/command injection, XSS, broken auth/authorization, hardcoded secrets, and insecure data handling. Includes Supabase-specific checks. Use when reviewing code for security, auditing a diff, or checking a feature before it ships.
 metadata:
-  author: perennia-regen
+  author: Perennia-Regeneracion
   version: "1.0.0"
 license: MIT
 ---
