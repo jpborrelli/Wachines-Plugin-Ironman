@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.3.3 — 2026-06-29
+
+- chore(rename): align references with Wachines-Plugin-Ironman repo (#31)
+
 ## 0.3.2 — 2026-06-29
 
 - chore(deps): update actions/checkout action to v7 (#26)
