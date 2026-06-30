@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.4.3 — 2026-06-30
+
+- chore(deps): update actions/setup-node action to v6 (#33)
+
 ## 0.4.2 — 2026-06-30
 
 - chore(deps): update dependency node to v24 (#30)
