@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.4.1 — 2026-06-30
+
+- chore(deps): update actions/setup-node action to v6 (#29)
+
 ## 0.4.0 — 2026-06-30
 
 - feat(engram): use current repo names as Engram project keys (#32)
