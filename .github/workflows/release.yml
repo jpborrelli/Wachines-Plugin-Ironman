@@ -41,7 +41,7 @@ jobs:
           fetch-depth: 0                              # historia completa + tags
           token: ${{ steps.app-token.outputs.token }} # push con la identidad de la App (bypassa el ruleset)
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
 
