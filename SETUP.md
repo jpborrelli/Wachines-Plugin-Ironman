@@ -73,6 +73,7 @@ Proyectos conocidos por el bootstrap (el project key usa el **nombre actual del 
 | `Perennia-Regeneracion/Reporte-Grass` | `reporte-grass` | `~/Documents/Reporte-Grass` o `~/Documents/reporteGrass` |
 | `Perennia-Regeneracion/Plataforma-Productores` | `plataforma-productores` | `~/Documents/Plataforma-Productores` o `~/Documents/gestionganadera` |
 | `Perennia-Regeneracion/Wachines-Brain` | `wachines-brain` | `~/Documents/Wachines-Brain` o `~/Documents/los-wachines-sa` |
+| `Perennia-Regeneracion/RumIAndo` | `rumiando` | `~/Documents/RumIAndo` |
 
 Si tus carpetas locales tienen otros nombres, seteá `WACHINES_DEV_REPOS` antes de correr el script:
 

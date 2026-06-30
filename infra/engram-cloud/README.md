@@ -65,6 +65,7 @@ Engram project keys use the **current repository names**, not the local folder n
 | `Perennia-Regeneracion/Reporte-Grass` | `reporte-grass` | `reportegrass` |
 | `Perennia-Regeneracion/Plataforma-Productores` | `plataforma-productores` | `gestionganadera` |
 | `Perennia-Regeneracion/Wachines-Brain` | `wachines-brain` | `wachines-brain-server` |
+| `Perennia-Regeneracion/RumIAndo` | `rumiando` | — |
 
 Each developer's local folder can keep the old or new name; `bin/setup-dev.sh` maps the folder name to the correct project key.
 
