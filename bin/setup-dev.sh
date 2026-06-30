@@ -9,7 +9,7 @@ have() { command -v "$1" >/dev/null 2>&1; }
 
 GSTACK_DIR="$HOME/.claude/skills/gstack"
 AGENTS="${WACHINES_AGENTS:-claude-code codex}"
-DEV_REPOS="${WACHINES_DEV_REPOS:-$HOME/Documents/BackOffice $HOME/Documents/reporteGrass $HOME/Documents/gestionganadera}"
+DEV_REPOS="${WACHINES_DEV_REPOS:-$HOME/Documents/Plataforma-Tecnicos $HOME/Documents/Reporte-Grass $HOME/Documents/Plataforma-Productores $HOME/Documents/Wachines-Brain $HOME/Documents/BackOffice $HOME/Documents/reporteGrass $HOME/Documents/gestionganadera $HOME/Documents/los-wachines-sa}"
 WACHINES_CORE_SKILLS="${WACHINES_CORE_SKILLS:-db-reviewer docs-architect frontend-design next-best-practices security-reviewer tanstack-query-hooks}"
 DEFAULT_ENGRAM_CLOUD_SERVER="https://wachines-engram-cloud.fly.dev"
 
@@ -22,10 +22,13 @@ agent_label() {
 }
 
 project_name_for_repo() {
+  # Los project keys de Engram usan el nombre actual del repo, no el nombre de la carpeta local.
+  # Así cada dev puede tener la carpeta con el nombre viejo o nuevo sin afectar el project key.
   case "$(basename "$1")" in
-    BackOffice) printf "backoffice" ;;
-    reporteGrass) printf "reportegrass" ;;
-    gestionganadera) printf "gestionganadera" ;;
+    Plataforma-Tecnicos|BackOffice) printf "plataforma-tecnicos" ;;
+    Reporte-Grass|reporteGrass) printf "reporte-grass" ;;
+    Plataforma-Productores|gestionganadera) printf "plataforma-productores" ;;
+    Wachines-Brain|los-wachines-sa) printf "wachines-brain" ;;
     *) basename "$1" | tr '[:upper:]' '[:lower:]' ;;
   esac
 }

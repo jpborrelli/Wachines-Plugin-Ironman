@@ -7,7 +7,7 @@ Fly app for the Wachines shared Engram memory server.
 - App: `wachines-engram-cloud`
 - URL: `https://wachines-engram-cloud.fly.dev`
 - Region: `sjc`
-- Allowed projects: `backoffice`, `reportegrass`, `gestionganadera`, `wachines-brain-server`
+- Allowed projects: `plataforma-tecnicos`, `reporte-grass`, `plataforma-productores`, `wachines-brain`
 
 ## Required secrets
 
@@ -51,9 +51,22 @@ Each developer sets:
 export ENGRAM_CLOUD_SERVER="https://wachines-engram-cloud.fly.dev"
 export ENGRAM_CLOUD_TOKEN="<team token>"
 engram cloud config --server "$ENGRAM_CLOUD_SERVER"
-engram cloud enroll backoffice
-engram sync --cloud --project backoffice
+engram cloud enroll plataforma-tecnicos
+engram sync --cloud --project plataforma-tecnicos
 ```
+
+### Project key mapping
+
+Engram project keys use the **current repository names**, not the local folder names:
+
+| Repository | Engram project key | Old project key |
+|---|---|---|
+| `Perennia-Regeneracion/Plataforma-Tecnicos` | `plataforma-tecnicos` | `backoffice` |
+| `Perennia-Regeneracion/Reporte-Grass` | `reporte-grass` | `reportegrass` |
+| `Perennia-Regeneracion/Plataforma-Productores` | `plataforma-productores` | `gestionganadera` |
+| `Perennia-Regeneracion/Wachines-Brain` | `wachines-brain` | `wachines-brain-server` |
+
+Each developer's local folder can keep the old or new name; `bin/setup-dev.sh` maps the folder name to the correct project key.
 
 The shared bootstrap in `bin/setup-dev.sh` performs the enroll/sync step for the known repos when
 both env vars are present.

@@ -65,19 +65,27 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Perennia-Regeneracion/Wachin
 El server compartido por default es `https://wachines-engram-cloud.fly.dev`. Si necesitás apuntar
 a otro server, seteá también `ENGRAM_CLOUD_SERVER`.
 
-Proyectos conocidos por el bootstrap:
+Proyectos conocidos por el bootstrap (el project key usa el **nombre actual del repo**, no el de la carpeta local):
 
-| Repo | Proyecto Engram |
-|------|-----------------|
-| `~/Documents/BackOffice` | `backoffice` |
-| `~/Documents/reporteGrass` | `reportegrass` |
-| `~/Documents/gestionganadera` | `gestionganadera` |
+| Repo actual | Project key Engram | Carpeta local (vieja o nueva) |
+|---|---|---|
+| `Perennia-Regeneracion/Plataforma-Tecnicos` | `plataforma-tecnicos` | `~/Documents/Plataforma-Tecnicos` o `~/Documents/BackOffice` |
+| `Perennia-Regeneracion/Reporte-Grass` | `reporte-grass` | `~/Documents/Reporte-Grass` o `~/Documents/reporteGrass` |
+| `Perennia-Regeneracion/Plataforma-Productores` | `plataforma-productores` | `~/Documents/Plataforma-Productores` o `~/Documents/gestionganadera` |
+| `Perennia-Regeneracion/Wachines-Brain` | `wachines-brain` | `~/Documents/Wachines-Brain` o `~/Documents/los-wachines-sa` |
+
+Si tus carpetas locales tienen otros nombres, seteá `WACHINES_DEV_REPOS` antes de correr el script:
+
+```bash
+export WACHINES_DEV_REPOS="$HOME/Documents/mi-carpeta-tecnicos $HOME/Documents/mi-carpeta-grass"
+bash <(curl -fsSL https://raw.githubusercontent.com/Perennia-Regeneracion/Wachines-Plugin-Ironman/main/bin/setup-dev.sh)
+```
 
 Verificación:
 
 ```bash
 engram cloud status
-engram sync --cloud --project backoffice --status
+engram sync --cloud --project plataforma-tecnicos --status
 codex mcp list | grep engram
 launchctl print "gui/$(id -u)/dev.engram.serve" | head
 ```
@@ -150,8 +158,8 @@ codex mcp add engram -- "$(command -v engram)" mcp --tools=agent
 
 # 6. Engram cloud
 engram cloud config --server "$ENGRAM_CLOUD_SERVER"
-engram cloud enroll backoffice
-engram sync --cloud --project backoffice
+engram cloud enroll plataforma-tecnicos
+engram sync --cloud --project plataforma-tecnicos
 ```
 
 ## Scope: global vs proyecto (importante)
