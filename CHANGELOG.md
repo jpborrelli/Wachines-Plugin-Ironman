@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.6.0 — 2026-06-30
+
+- feat(ruuts-api): skill de convenciones + flujo para contribuir a ruuts-api (#36)
+
 ## 0.5.0 — 2026-06-30
 
 - feat(engram): add RumIAndo project to cloud sync (#35)
