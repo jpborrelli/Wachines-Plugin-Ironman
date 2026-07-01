@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.6.2 — 2026-07-01
+
+- docs(ruuts-api): naming de branch con guión (el pipeline no matchea feat/) (#39)
+
 ## 0.6.1 — 2026-07-01
 
 - docs(ruuts-api): agregar el orden card→branch→MR (el ID nace del branch) (#37)
