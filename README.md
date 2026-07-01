@@ -106,6 +106,7 @@ have with `npx skills list`; search with `npx skills find <query>`.
 | [`wachi-fabrica`](skills/wachi-fabrica) | El orquestador ("el jefe") de la software factory: clasifica un cambio y rutea la ruta mínima de subagentes/skills hasta el PR | Perennia-Regeneracion · MIT |
 | [`wachi-qa`](skills/wachi-qa) | QA funcional de front con motor `agent-browser` + arranque local `portless`/`npm run dev`: prueba como usuario real exigente (botones, forms vacío/inválido/edge, estados, consola, responsive), health score 0-100, arregla en source con commits atómicos. Modo `--report-only` | Perennia-Regeneracion · MIT |
 | [`ruuts-api`](skills/ruuts-api) | Convenciones + flujo para contribuir MRs al repo ruuts-api (la API que GRASS consume): los 5 patrones que sus reviews marcan siempre (paridad con el endpoint hermano, errores tipados, concurrencia en batch, cleanup de recursos, reglas de su changelog) + self-review con `/code-review` antes de pedir review | Perennia-Regeneracion · MIT |
+| [`rumiando`](skills/rumiando) | Operar RumIAndo (producto interno de gestión): tickets WCH-NNN, fichas, ficheros y releases por RPC del schema `api` (MCP `conector-rumiando`) + el modelo fichero/ficha + la frontera de datos RumIAndo/Brain/Engram. Para el equipo de producto | Perennia-Regeneracion · MIT |
 
 `db-reviewer`, `docs-architect` and `security-reviewer` are also provided as **subagents** in
 [`agents/`](agents) for users who prefer the Claude Code subagent form — copy them into your
