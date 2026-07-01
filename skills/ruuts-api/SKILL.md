@@ -1,6 +1,6 @@
 ---
 name: ruuts-api
-description: Convenciones y flujo de trabajo para contribuir al repo ruuts-api (GitLab ruuts-la/ruuts-api) — la API que GRASS consume. Usar SIEMPRE que se trabaje en ruuts-api: un MR (!XXXX), un endpoint v2 de monitoring (tasks/pictures/events), el write-path canónico (_rev, recalc de status), responder una code review de Grego, o cualquier cambio en ese repo. Codifica los patrones que las reviews de Ruuts marcan una y otra vez (paridad con el endpoint hermano, errores tipados, concurrencia en batch, reglas del changelog) y el flujo de self-review ANTES de pedir review. NO es para el repo GRASS (ReporteGrass) ni para la plataforma Perennia.
+description: Convenciones y flujo de trabajo para contribuir al repo ruuts-api (GitLab ruuts-la/ruuts-api) — la API que GRASS consume. Usar SIEMPRE que se trabaje en ruuts-api: un MR (!XXXX), un endpoint v2 de monitoring (tasks/pictures/events), el write-path canónico (_rev, recalc de status), responder una code review de Grego, o cualquier cambio en ese repo. Codifica los patrones que las reviews de Ruuts marcan una y otra vez (paridad con el endpoint hermano, errores tipados, concurrencia en batch, reglas del changelog), el flujo de self-review ANTES de pedir review, y el orden card-de-Notion→branch→MR (el ID del changelog nace del nombre del branch). NO es para el repo GRASS (ReporteGrass) ni para la plataforma Perennia.
 metadata:
   author: Perennia-Regeneracion
   version: "1.0.0"
@@ -52,12 +52,13 @@ Subidas a S3 (u otro recurso externo) que ocurren **antes** de la transacción d
 `.agents/rules/update-changelog.md` es explícita y la violamos seguido:
 - Entradas nuevas van bajo **`## RELEASE vNext`** (arriba de todo), nunca bajo un release ya publicado (cuidado al rebasear: el rebase a veces las mete en el release viejo).
 - **Sin endpoints crudos** (`POST /v2/...`), sin jerga interna (`allowedFields`, `tasks.list retorna {count,rows}`). Lenguaje de **producto/usuario**.
-- Prefijo **`(ID XXXX)`** de Notion en cada entrada (como las vecinas). Ante la duda, **confirmá el ticket** antes de redactar — no inventes el ID; dejá `(ID XXXX)` y pedilo.
+- Prefijo **`(ID NNNN)`** de Notion en cada entrada (como las vecinas). El ID es el de la card del board Tech (nace del nombre del branch, ver Flujo paso 0). **Nunca lo inventes** (§2 de la regla lo prohíbe explícitamente): si hay card, usá su ID; si de verdad no hay ticket, la regla permite **omitir el prefijo** — no dejar `(ID XXXX)` de placeholder en un MR que se mergea.
 
 ## Flujo de un MR (con self-review — el cambio de hábito clave)
 
+0. **Card de Notion PRIMERO, después el branch.** El ID de la card **nace del nombre del branch**: `/pr` (`.agents/commands/pr.md`) extrae el primer número del branch como `TASK_ID` y de ahí sale el `(ID NNNN)` del título del MR y del changelog. Orden canónico del equipo: **card → branch `feat/<ID>-descripcion` → `/pr`**. Creá la card con la skill del repo **`.agents/skills/notion-card-creation`** (va en la *Backlog General DB* del board *👾 Tech*, con defaults del equipo). Nombrá el branch con ese ID. Si arrancás el branch sin número, quedás con `(ID XXXX)` sin resolver y la review te lo marca (pasó en !1045 → hubo que crear la card a mano ex-post, ID 5431). ⚠️ La skill `notion-card-creation` y el paso 5 de `/pr` (comentar el MR en la card + mover Status) requieren un conector de Notion apuntando al **workspace de Ruuts** — desde una sesión Perennia/GRASS da 404; correlo del lado Ruuts o pedíselo a Grego.
 1. **Leé** las `.agents/rules/` relevantes del repo ANTES de escribir.
-2. Branch desde `staging`; implementá siguiendo los 5 patrones.
+2. Branch desde `staging` **nombrado con el ID de la card** (`feat/<ID>-...`); implementá siguiendo los 5 patrones.
 3. **Tests + lint locales**: `npx vitest run` (suite entera verde) + `npx eslint .` (0 *errores*; los warnings pre-existentes no bloquean). Agregá tests que documenten el comportamiento nuevo (ej. el bump de `_rev`, el cleanup en fallo de subida, el 400 por `_rev` faltante).
 4. **Self-review ANTES de pedir review** (shift-left): corré `/code-review` sobre tu diff y atendé lo que salga. Grego revisa con un agente igual — si vos lo corrés primero, llega un MR casi limpio. Pasá el diff por los 5 patrones de arriba como checklist.
 5. Push + abrí el MR (Draft mientras itera). Si toca el contrato que GRASS consume (permisos, shape de error, `_rev`), abrí el **PR espejo en GRASS** y notá la dependencia **lockstep** en ambos.
@@ -69,7 +70,8 @@ Subidas a S3 (u otro recurso externo) que ocurren **antes** de la transacción d
 - [ ] ¿Errores **tipados** + `catchAPIError`, sin `new Error().status` ni ramificación manual en el controller?
 - [ ] ¿`_rev` obligatorio en batch? ¿lock ordenado por `id`? ¿una sola transacción?
 - [ ] ¿Cleanup de S3/recursos externos en el error path, con `allSettled`?
-- [ ] ¿Changelog en `vNext`, sin jerga/endpoints, con `(ID XXXX)`?
+- [ ] ¿El branch se llama `feat/<ID>-...` con el ID de la card creada ANTES de empezar?
+- [ ] ¿Changelog en `vNext`, sin jerga/endpoints, con el `(ID NNNN)` real (no un placeholder)?
 - [ ] ¿Suite verde + ESLint 0 errores?
 - [ ] ¿Corrí `/code-review` sobre el diff y atendí lo que salió?
 - [ ] ¿Si toca un contrato que GRASS consume, abrí el PR espejo y noté el lockstep?
