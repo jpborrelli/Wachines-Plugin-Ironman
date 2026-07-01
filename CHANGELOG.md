@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.6.1 — 2026-07-01
+
+- docs(ruuts-api): agregar el orden card→branch→MR (el ID nace del branch) (#37)
+
 ## 0.6.0 — 2026-06-30
 
 - feat(ruuts-api): skill de convenciones + flujo para contribuir a ruuts-api (#36)
