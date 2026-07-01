@@ -1,6 +1,6 @@
 ---
 name: ruuts-api
-description: Convenciones y flujo de trabajo para contribuir al repo ruuts-api (GitLab ruuts-la/ruuts-api) — la API que GRASS consume. Usar SIEMPRE que se trabaje en ruuts-api: un MR (!XXXX), un endpoint v2 de monitoring (tasks/pictures/events), el write-path canónico (_rev, recalc de status), responder una code review de Grego, o cualquier cambio en ese repo. Codifica los patrones que las reviews de Ruuts marcan una y otra vez (paridad con el endpoint hermano, errores tipados, concurrencia en batch, reglas del changelog), el flujo de self-review ANTES de pedir review, y el orden card-de-Notion→branch→MR (el ID del changelog nace del nombre del branch). NO es para el repo GRASS (ReporteGrass) ni para la plataforma Perennia.
+description: Convenciones y flujo de trabajo para contribuir al repo ruuts-api (GitLab ruuts-la/ruuts-api) — la API que GRASS consume. Usar SIEMPRE que se trabaje en ruuts-api: un MR (!XXXX), un endpoint v2 de monitoring (tasks/pictures/events), el write-path canónico (_rev, recalc de status), responder una code review de Grego, o cualquier cambio en ese repo. Codifica los patrones que las reviews de Ruuts marcan una y otra vez (paridad con el endpoint hermano, errores tipados, concurrencia en batch, reglas del changelog), el flujo de self-review ANTES de pedir review, el orden card-de-Notion→branch→MR (el ID del changelog nace del nombre del branch), y cómo diagnosticar fallos de CI/pipeline (deploy_development, seed, branch stale contra staging). NO es para el repo GRASS (ReporteGrass) ni para la plataforma Perennia.
 metadata:
   author: Perennia-Regeneracion
   version: "1.0.0"
@@ -18,6 +18,7 @@ license: MIT
 - Remote: `ssh://git@gitlab.com/ruuts-la/ruuts-api.git`. CLI: **`glab`** (no `gh`).
 - Worktrees en `~/Documents/ruuts-api-worktrees/<branch>/`; repo principal en `~/Documents/ruuts-api`.
 - Branch base de los MRs: **`staging`**. Conventional Commits.
+- **Naming de branch: usá guión, NUNCA slash** → `feat-<ID>-descripcion`, `fix-<ID>-descripcion`. El pipeline de GitLab CI de Ruuts **no matchea refs con `/`** (`feat/x` no dispara los jobs) — un MR con branch `feat/...` queda sin correr y Grego te pide renombrarla. GitLab **no deja cambiar la source branch de un MR existente**, así que el "rename" obliga a crear branch nueva + MR nuevo + cerrar el viejo (pasó con !1045→!1073 y !1044→!1074). Naciendo con guión te lo ahorrás.
 - Node del proyecto: el que pide su `.nvmrc` (corre con node 18 en CI; los tests son **vitest**: `npx vitest run`).
 - **Leé sus reglas antes de tocar nada**: `.agents/rules/` (`update-changelog.md`, `unit-tests.md`, `lint-verification.md`, `comments.md`) y `.agents/commands/pr.md`. La mitad de los hallazgos evitables salen de no haber leído estas reglas que YA existen.
 
@@ -56,13 +57,23 @@ Subidas a S3 (u otro recurso externo) que ocurren **antes** de la transacción d
 
 ## Flujo de un MR (con self-review — el cambio de hábito clave)
 
-0. **Card de Notion PRIMERO, después el branch.** El ID de la card **nace del nombre del branch**: `/pr` (`.agents/commands/pr.md`) extrae el primer número del branch como `TASK_ID` y de ahí sale el `(ID NNNN)` del título del MR y del changelog. Orden canónico del equipo: **card → branch `feat/<ID>-descripcion` → `/pr`**. Creá la card con la skill del repo **`.agents/skills/notion-card-creation`** (va en la *Backlog General DB* del board *👾 Tech*, con defaults del equipo). Nombrá el branch con ese ID. Si arrancás el branch sin número, quedás con `(ID XXXX)` sin resolver y la review te lo marca (pasó en !1045 → hubo que crear la card a mano ex-post, ID 5431). ⚠️ La skill `notion-card-creation` y el paso 5 de `/pr` (comentar el MR en la card + mover Status) requieren un conector de Notion apuntando al **workspace de Ruuts** — desde una sesión Perennia/GRASS da 404; correlo del lado Ruuts o pedíselo a Grego.
+0. **Card de Notion PRIMERO, después el branch.** El ID de la card **nace del nombre del branch**: `/pr` (`.agents/commands/pr.md`) extrae el primer número del branch como `TASK_ID` y de ahí sale el `(ID NNNN)` del título del MR y del changelog. Orden canónico del equipo: **card → branch `feat-<ID>-descripcion` (guión, no slash — ver Setup) → `/pr`**. Creá la card con la skill del repo **`.agents/skills/notion-card-creation`** (va en la *Backlog General DB* del board *👾 Tech*, con defaults del equipo). Nombrá el branch con ese ID. Si arrancás el branch sin número, quedás con `(ID XXXX)` sin resolver y la review te lo marca (pasó en !1045 → hubo que crear la card a mano ex-post, ID 5431). ⚠️ La skill `notion-card-creation` y el paso 5 de `/pr` (comentar el MR en la card + mover Status) requieren un conector de Notion apuntando al **workspace de Ruuts** — desde una sesión Perennia/GRASS da 404; correlo del lado Ruuts o pedíselo a Grego.
 1. **Leé** las `.agents/rules/` relevantes del repo ANTES de escribir.
-2. Branch desde `staging` **nombrado con el ID de la card** (`feat/<ID>-...`); implementá siguiendo los 5 patrones.
+2. Branch desde `staging` **nombrado con el ID de la card y con guión** (`feat-<ID>-...`, nunca `feat/`); implementá siguiendo los 5 patrones.
 3. **Tests + lint locales**: `npx vitest run` (suite entera verde) + `npx eslint .` (0 *errores*; los warnings pre-existentes no bloquean). Agregá tests que documenten el comportamiento nuevo (ej. el bump de `_rev`, el cleanup en fallo de subida, el 400 por `_rev` faltante).
 4. **Self-review ANTES de pedir review** (shift-left): corré `/code-review` sobre tu diff y atendé lo que salga. Grego revisa con un agente igual — si vos lo corrés primero, llega un MR casi limpio. Pasá el diff por los 5 patrones de arriba como checklist.
 5. Push + abrí el MR (Draft mientras itera). Si toca el contrato que GRASS consume (permisos, shape de error, `_rev`), abrí el **PR espejo en GRASS** y notá la dependencia **lockstep** en ambos.
 6. Al responder una review: **no patees nada**. Corregí cada hallazgo o explicá por qué no aplica. Si un fix implica cambiar GRASS, cambialo. Respondé punto por punto en el MR y reaccioná 👍.
+
+## Branch vieja: mergeá `staging` antes de re-pedir merge (el fallo que ningún patrón atrapa)
+
+Un MR puede estar **verde durante semanas y romperse sin que su diff cambie**. La causa no es el código: el pipeline de Ruuts tiene un job **`deploy_development`** que corre migraciones + seed **contra una DB de development COMPARTIDA**, aplicando *el modelo de tu branch*. Si tu branch quedó atrás de `staging`, corre un modelo viejo contra un schema que staging ya migró → el seed revienta con errores tipo `Key (hubId)=... is not present in table "hubs"` (FK violada), aunque tu diff no toque el seed ni los hubs.
+
+- **Regla:** antes de re-pedir merge/aprobación de un MR que no es de hoy, **`git merge origin/staging`** en la branch y push. El CI valida contra el entorno de **hoy**, no el de cuando lo abriste.
+- **Síntoma diagnóstico:** el que falla es `deploy_development` (no `build`/`test`/`lint`, que corren aislados). Si `test` pasa pero `deploy_development` falla en el seed, es *skew* de branch, no un bug — la respuesta es mergear staging, no tocar el seed.
+- Cuidado con el **auto-merge del `CHANGELOG.MD`**: al mergear staging suele **vaciar tu bloque `vNext`** (staging reorganiza releases). Verificá que tus entradas sigan ahí y re-agregalas si hace falta.
+- Pasó en !1074 (refData): branch 61 commits atrás → `deploy_development` reventaba con el hubId; `git merge origin/staging` lo dejó verde sin tocar nada del fix.
+- Ruido ortogonal: el `deploy_development` a veces falla por infra transitoria (`scp: not found` al instalar `openssh-client` desde el mirror de Alpine, exit 127). Eso **no es tu código** → re-run del job.
 
 ## Checklist pre-push (pegá esto mentalmente antes de cada `git push`)
 
@@ -70,8 +81,9 @@ Subidas a S3 (u otro recurso externo) que ocurren **antes** de la transacción d
 - [ ] ¿Errores **tipados** + `catchAPIError`, sin `new Error().status` ni ramificación manual en el controller?
 - [ ] ¿`_rev` obligatorio en batch? ¿lock ordenado por `id`? ¿una sola transacción?
 - [ ] ¿Cleanup de S3/recursos externos en el error path, con `allSettled`?
-- [ ] ¿El branch se llama `feat/<ID>-...` con el ID de la card creada ANTES de empezar?
+- [ ] ¿El branch se llama `feat-<ID>-...` (guión, NUNCA slash — el pipeline no matchea `feat/`) con el ID de la card creada ANTES de empezar?
 - [ ] ¿Changelog en `vNext`, sin jerga/endpoints, con el `(ID NNNN)` real (no un placeholder)?
 - [ ] ¿Suite verde + ESLint 0 errores?
 - [ ] ¿Corrí `/code-review` sobre el diff y atendí lo que salió?
 - [ ] ¿Si toca un contrato que GRASS consume, abrí el PR espejo y noté el lockstep?
+- [ ] Si el MR no es de hoy: ¿mergeaste `origin/staging` para que `deploy_development` valide contra el entorno actual (y verificaste que el `vNext` del changelog no quedó vacío)?
