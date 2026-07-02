@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.7.0 — 2026-07-02
+
+- feat(wachi-producto): orquestador del proceso de producto + 5 skills-hijas propias (WCH-116) (#40)
+
 ## 0.6.2 — 2026-07-01
 
 - docs(ruuts-api): naming de branch con guión (el pipeline no matchea feat/) (#39)
