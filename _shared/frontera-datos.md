@@ -2,7 +2,12 @@
 
 > **Fuente única, referenciada desde las skills.** Dónde vive cada tipo de dato en la fábrica de Perennia × Ruuts, para que el agente **enrute solo** en vez de tirar todo al mismo lado. Cuando una skill dice "guardá esto", esta tabla decide **dónde**.
 >
-> ⚠️ **DRAFT.** La versión canónica la escribe **L3 · WCH-114** (Pablo, keystone) como `.md` dedicado en el hub `los-wachines-sa` + el `CLAUDE.md` raíz. Esto es el modelo acordado en la sesión del 01-jul-2026 (`reuniones/2026-07-01-jb-rumiando-plugin-frontera-datos`), suficiente para operar hoy. Cuando L3 aterrice, esta referencia apunta a ella y no se duplica el criterio.
+> ⚠️ **BORRADOR — criterio definido, implementación PENDIENTE.** El criterio ya está escrito (canon: `_meta/frontera-datos.md`, WCH-114, en el hub `los-wachines-sa` + `CLAUDE.md` raíz). Lo que **falta para que esta frontera opere de verdad**:
+> 1. **Editar las skills** que tocan o requieren guardar datos para que **usen esta frontera + las tools correspondientes** (Engram `mem_save` · conector-rumiando `api.*` · brain git-first) — y que entiendan la lógica de RumIAndo (fichas/ficheros/estados).
+> 2. **Editar los `CLAUDE.md`** de cada repo (con ~10% de líneas dedicadas a instrucciones de Engram: formato, frontmatter con `ticket: WCH-NNN`); el resto de la frontera se **referencia** desde el `CLAUDE.md`, no se duplica.
+> 3. **Repartir los conectores** al equipo (MCP `conector-rumiando` — L1/WCH-109).
+>
+> Este archivo es la **copia operativa del plugin** (self-contained: el plugin se instala *fuera* del hub, así que no puede apuntar al `.md` del hub por path). **Sync con el canon: mecanismo a definir con JB** (a mano en cada cambio de frontera, o automatizado).
 
 ## La regla en una frase
 
@@ -36,5 +41,5 @@ Datos duros ya estructurados (cargas de campo, facturación, el propio backlog d
 ## Referencias
 
 - Sesión que lo definió: `reuniones/2026-07-01-jb-rumiando-plugin-frontera-datos` (hub).
-- Canon pendiente: **L3 · WCH-114** — `.md` de frontera + `CLAUDE.md` raíz (define A/B/C/D del Brain).
+- Canon (criterio): **`_meta/frontera-datos.md`** (WCH-114, hub) + `CLAUDE.md` raíz (define A/B/C/D del Brain). La **implementación** (skills + `CLAUDE.md` de cada repo + conectores) está **pendiente**.
 - Modelo de los 3 brains y git-first: `_meta/brains-como-funciona.md`, `_meta/operacion-gbrain-fly-supabase.md` (hub).

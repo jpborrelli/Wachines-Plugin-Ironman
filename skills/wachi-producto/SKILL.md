@@ -36,7 +36,7 @@ Tres preguntas, en orden, antes de mover un dedo:
 | **Feature a definir** (problema conocido) | ficha a `BORRADOR` → `wachi-definicion` (artefacto que madura) → `PARA_VALIDAR` | ideación (ya se sabe qué) |
 | **Listo para validar con usuario** (hay prototipo/contenido) | `wachi-validacion-usuario` (sesión → hallazgos → decisiones → procesar) | ideación, definición |
 | **Listo para validación interna** (ficha `VALIDADA`) | `wachi-validacion-interna` (panel + ADRs + DoR → `READY_TO_BUILD`) | etapas anteriores |
-| **Decisión de adopción** ("¿usamos X?", "¿migramos a Y?") | `wachi-validacion-interna` en modo veredicto (dos-pisos → Adoptar/Probar/Esperar/Rechazar) | el resto del pipeline |
+| **Decisión de adopción** ("¿usamos X?", "¿migramos a Y?") | `wachi-validacion-interna` en modo veredicto (dos-pisos → Adoptar/Probar/Esperar/Rechazar/No-es-nuestro-problema) | el resto del pipeline |
 | **Aprendizaje / cierre** (algo terminó, bien o mal) | `wachi-compound` (learning-doc → brain/engram + decisión en la ficha) | todo lo demás |
 | **Consulta de estado** ("¿cómo va X?") | lecturas de RumIAndo + resumen honesto | toda escritura |
 

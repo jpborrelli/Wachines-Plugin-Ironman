@@ -13,6 +13,7 @@ Escribís el **contrato de producto** de una ficha: qué se construye y cómo sa
 
 > **Fuente robada** (skill propia, el original NO se invoca): EveryInc/compound-engineering-plugin `ce-brainstorm` + `ce-plan` @ v3.17.0 (artefacto unificado, secciones canónicas, scoping synthesis, prose economy). Re-sync: revisar upstream cada ~2 meses.
 > Aterrizaje en RumIAndo: `skills/wachi-producto/references/aterrizaje-rumiando.md`.
+> Embebé el spine (`_shared/agent-spine.md`): voz directa, anti-slop, quote-the-evidence, completion honesto.
 
 ## ⚖️ IRON LAW
 **CONFIRMÁ EL ALCANCE ANTES DE ESCRIBIR.** Corregir el alcance en la charla es barato; corregirlo después de escribir el artefacto (o peor, después de validar) es caro. Y: **el progreso NO vive en el doc** — vive en la state machine de RumIAndo. El doc solo declara su completitud.
