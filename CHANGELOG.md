@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.9.0 — 2026-07-03
+
+- feat(actualizar-wachines): skill de auto-update del plugin vía claude plugin (reemplaza flujo npx) (#43)
+
 ## 0.8.0 — 2026-07-03
 
 - feat(setup-engram): skill de setup cliente para conectar al engram-cloud del equipo (#42)
