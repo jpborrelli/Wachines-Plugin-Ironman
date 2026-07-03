@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.8.0 — 2026-07-03
+
+- feat(setup-engram): skill de setup cliente para conectar al engram-cloud del equipo (#42)
+
 ## 0.7.0 — 2026-07-02
 
 - feat(wachi-producto): orquestador del proceso de producto + 5 skills-hijas propias (WCH-116) (#40)
