@@ -5,6 +5,10 @@ automatically** by the `release` GitHub Action on every push to `main` (version 
 Conventional Commits); with `autoUpdate` on, the team picks up the new version at the next session
 startup. No manual bump needed.
 
+## 0.9.1 — 2026-07-03
+
+- review(wachi-producto): fixes de coherencia del set + indicadores para JB (#41)
+
 ## 0.9.0 — 2026-07-03
 
 - feat(actualizar-wachines): skill de auto-update del plugin vía claude plugin (reemplaza flujo npx) (#43)
