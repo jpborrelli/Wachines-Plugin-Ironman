@@ -22,7 +22,7 @@ Sos **el jefe del pre-dev**. No escribís el producto vos: **entendés qué quie
 Tres preguntas, en orden, antes de mover un dedo:
 
 1. **¿Qué trae?** Clasificá el input en un tipo del router. Si es ambiguo ("quiero mejorar X") → `AskUserQuestion`, una pregunta por vez, hasta poder clasificar. No asumas la ruta cara.
-2. **¿Dónde está parado en RumIAndo?** Antes de crear nada: `api.resumen_producto` + `api.buscar_fichas` + `api.actividad_filtrada` (ver `references/aterrizaje-rumiando.md`). Si la ficha ya existe, la ruta arranca desde **su estado actual**, no desde cero. Si no existe, el intake la crea.
+2. **¿Dónde está parado en RumIAndo?** Antes de crear nada: `resumen_producto` + `buscar_fichas` + `actividad_filtrada` del **conector-rumiando** (empezá con `mis_capacidades`; ver `references/aterrizaje-rumiando.md`). Si la ficha ya existe, la ruta arranca desde **su estado actual**, no desde cero. Si no existe, el intake la crea.
 3. **¿Qué profundidad amerita?** (right-sizing, robado de CE):
    - **Liviana** — ajuste chico, alcance claro, sin decisión estructural → mínimo de preguntas, directo al aterrizaje.
    - **Estándar** — feature con decisiones de alcance → las etapas que apliquen, con confirmación de alcance.
@@ -36,7 +36,7 @@ Tres preguntas, en orden, antes de mover un dedo:
 | **Feature a definir** (problema conocido) | ficha a `BORRADOR` → `wachi-definicion` (artefacto que madura) → `PARA_VALIDAR` | ideación (ya se sabe qué) |
 | **Listo para validar con usuario** (hay prototipo/contenido) | `wachi-validacion-usuario` (sesión → hallazgos → decisiones → procesar) | ideación, definición |
 | **Listo para validación interna** (ficha `VALIDADA`) | `wachi-validacion-interna` (panel + ADRs + DoR → `READY_TO_BUILD`) | etapas anteriores |
-| **Decisión de adopción** ("¿usamos X?", "¿migramos a Y?") | `wachi-validacion-interna` en modo veredicto (dos-pisos → Adoptar/Probar/Esperar/Rechazar) | el resto del pipeline |
+| **Decisión de adopción** ("¿usamos X?", "¿migramos a Y?") | `wachi-validacion-interna` en modo veredicto (dos-pisos → Adoptar/Probar/Esperar/Rechazar/No-es-nuestro-problema) | el resto del pipeline |
 | **Aprendizaje / cierre** (algo terminó, bien o mal) | `wachi-compound` (learning-doc → brain/engram + decisión en la ficha) | todo lo demás |
 | **Consulta de estado** ("¿cómo va X?") | lecturas de RumIAndo + resumen honesto | toda escritura |
 
@@ -50,7 +50,7 @@ Decí: **qué trae el usuario, en qué estado está, qué ruta elegiste, qué pr
 - **El que juzga sos vos en el único contexto que ve todo; los subagentes ejecutan trabajo ya aprobado** (robado de CE — su meta-principio de orquestación).
 
 ## Fase 3 — Aterrizá (no negociable)
-**Todo avance queda en RumIAndo vía RPC — si no quedó en RumIAndo, no pasó.** El contrato completo (firmas, estados, gates, errores) vive en `references/aterrizaje-rumiando.md` — las hijas lo usan; vos verificás que lo usaron (mirá los `effects` que devolvieron, no el "listo" del reporte).
+**Todo avance queda en RumIAndo vía el `conector-rumiando` — si no quedó en RumIAndo, no pasó.** El mapa proceso→herramienta, los estados y los gates viven en `references/aterrizaje-rumiando.md`; el **contrato de cada tool** (params, errores) lo da `mis_capacidades` del conector, no un archivo que driftea. Las hijas lo usan; vos verificás que lo usaron (mirá los `effects` que devolvieron, no el "listo" del reporte).
 
 ## Fase 4 — Gate humano (por umbral)
 `AskUserQuestion` cuando: decisión de alcance que cambia el plan (los call-outs de `wachi-definicion`) · veredicto de adopción · retroceso de estado · cierre de sesión de validación con hallazgos `bloqueante`. Una pregunta por vez, con recomendación.

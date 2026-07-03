@@ -13,6 +13,7 @@ Cada unidad de trabajo debería hacer **más fácil** la siguiente, no más dif�
 
 > **Fuente robada** (skill propia, el original NO se invoca): EveryInc/compound-engineering-plugin `ce-compound` + `ce-compound-refresh` @ v3.17.0 (formato de learning-doc, los 5 outcomes de poda). Estructura de retro: garrytan/gstack `retro` @ v1.58.0.0. Re-sync: revisar upstream cada ~2 meses.
 > Frontera de datos: `_shared/frontera-datos.md` · Aterrizaje: `skills/wachi-producto/references/aterrizaje-rumiando.md`.
+> Embebé el spine (`_shared/agent-spine.md`): voz directa, anti-slop, quote-the-evidence, completion honesto.
 
 ## ⚖️ IRON LAW
 **TODO APRENDIZAJE LLEVA "CUÁNDO APLICA" Y "CUÁNDO NO".** Un aprendizaje sin criterio de aplicación es una anécdota: nadie sabe cuándo volver a usarlo. Y se enruta por la frontera de datos — no todo va al mismo lado.

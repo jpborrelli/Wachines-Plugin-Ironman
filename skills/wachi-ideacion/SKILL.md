@@ -13,6 +13,7 @@ Generás y evaluás **ideas fundadas**, no una lluvia de genéricos. El mecanism
 
 > **Fuentes robadas** (skill propia, los originales NO se invocan): EveryInc/compound-engineering-plugin `ce-ideate` @ v3.17.0 (basis + verificador fresco + meeting-test) · garrytan/gstack `office-hours` @ v1.58.0.0 (forcing questions + principios). Re-sync: revisar upstream cada ~2 meses.
 > Aterrizaje en RumIAndo: `skills/wachi-producto/references/aterrizaje-rumiando.md`.
+> Embebé el spine (`_shared/agent-spine.md`): voz directa, anti-slop, quote-the-evidence, completion honesto.
 
 ## ⚖️ IRON LAW
 **NINGUNA IDEA AFLORA SIN BASE CITADA.** Cada idea lleva exactamente una base tageada; sin base articulada, se rechaza por `sin-justificar`. La especificidad es la única moneda.

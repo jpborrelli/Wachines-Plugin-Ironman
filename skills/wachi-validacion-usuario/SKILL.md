@@ -13,6 +13,7 @@ Convertís el contrato de la ficha en una **sesión de validación con evidencia
 
 > Skill **propia** (sin fuente externa directa — el modelo de sesión es el de RumIAndo). Principios de conducción robados de garrytan/gstack `office-hours` @ v1.58.0.0 ("mirar, no demostrar"). Re-sync: revisar upstream cada ~2 meses.
 > Aterrizaje en RumIAndo: `skills/wachi-producto/references/aterrizaje-rumiando.md`.
+> Embebé el spine (`_shared/agent-spine.md`): voz directa, anti-slop, quote-the-evidence, completion honesto.
 
 ## ⚖️ IRON LAW
 **MIRÁ, NO DEMUESTRES.** Un walkthrough guiado no enseña nada del uso real; ver a alguien trastabillar — mordiéndote la lengua — enseña todo. Y todo hallazgo lleva la **evidencia de qué hizo o dijo el usuario**, no tu interpretación.
@@ -36,14 +37,14 @@ Si la sesión ya ocurrió (transcripción, notas, audio): extraé hallazgos y de
 
 ## Fase 2 — Registrá (todo, tipado, con evidencia)
 
-Por cada cosa que pasó: `agregar_hallazgo(id_artefacto, tipo, descripcion, id_ficha_afectada?, orden?)`
+Por cada cosa que pasó: `agregar_hallazgo` (sobre la sesión abierta; params exactos en `mis_capacidades`)
 - **Tipos:** `ux` (no encontró/no entendió) · `funcional` (falta o sobra comportamiento) · `tecnico` (roto/lento) · `bloqueante` (impide el valor central).
-- **La descripción lleva la evidencia:** *"[Participante] intentó X, pasó Y — «cita de lo que dijo»"*. Vinculá `id_ficha_afectada` cuando el hallazgo apunta a una ficha concreta (puede ser transversal).
+- **La descripción lleva la evidencia:** *"[Participante] intentó X, pasó Y — «cita de lo que dijo»"*. Vinculá la **ficha afectada** cuando el hallazgo apunta a una ficha concreta (puede ser transversal).
 
-Por cada resolución tomada con el equipo: `agregar_decision(id_artefacto, descripcion, accion, id_ficha?, id_ticket?)`
-- **Acciones:** `aceptar` (la hipótesis validó) · `rechazar` (no va) · `iterar` (vuelve a definición con estos cambios) · `derivar` (abre un ticket/ADR — linkealo en `id_ticket_relacionado`).
+Por cada resolución tomada con el equipo: `agregar_decision` (sobre la sesión; params en `mis_capacidades`)
+- **Acciones:** `aceptar` (la hipótesis validó) · `rechazar` (no va) · `iterar` (vuelve a definición con estos cambios) · `derivar` (abre un ticket/ADR y vinculalo a la decisión).
 
-Cerrá: `cerrar_sesion_validacion(id_artefacto)` — después del cierre no entran más hallazgos.
+Cerrá: `cerrar_sesion_validacion` — después del cierre no entran más hallazgos.
 
 ## Fase 3 — Procesá las decisiones (el loop que no se cierra solo)
 
