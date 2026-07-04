@@ -22,12 +22,17 @@ Cada unidad de trabajo debería hacer **más fácil** la siguiente, no más dif�
 
 Al cierre de una corrida (ficha SHIPPED o rechazada, sesión de validación, ADR resuelto, retro), extraé los aprendizajes y clasificá cada uno en su **pista**:
 
-- **Pista producto/proceso** — "los productores no cargan datos si el win no es visible", "validar con prototipo antes de definir ahorró dos vueltas". → **Wachi Brain**.
-- **Pista decisión** — el porqué de un ADR, un veredicto de adopción, un rechazo de feature. → **Wachi Brain** (`decisiones/`) + ya registrado en RumIAndo.
-- **Pista código** — gotcha técnico, convención, fix no obvio del repo en el que se trabajó. → **Engram** (`mem_save`) con `ticket: WCH-NNN` en el frontmatter.
-- **Hecho de fábrica** — si el evento en sí (decisión de sesión, transición, hallazgo) no quedó en RumIAndo, eso es un bug del proceso: registralo ahora (RPC), no lo "documentes" en otro lado.
+El discriminante clave es el **ALCANCE**: ¿es de un producto (→ su repo) o del ecosistema/empresa (→ Brain)? Las cinco pistas (frontera completa: `_shared/frontera-datos.md`):
 
-## Fase 1 — Escribí el learning-doc (pista producto/decisión → brain)
+- **Pista transversal / producto-proceso** — aprendizaje que sirve cross-repo o a la empresa ("los productores no cargan datos si el win no es visible", "validar con prototipo ahorró dos vueltas"). → **Wachi Brain**.
+- **Pista decisión — POR ALCANCE:**
+  - **ADR de un producto** (cómo *este* repo resuelve algo técnico) → **el repo del producto** (`/docs/adr`, versionado con el código); su gotcha operativo → **Engram**. **NO al Brain** (el Brain lo referencia, no lo posee).
+  - **Decisión transversal / de empresa** (veredicto de adopción cross-repo, decisión de ecosistema, un rechazo con impacto de partnership) → **Wachi Brain** (`decisiones/`).
+- **Pista código** — gotcha técnico, convención, fix no obvio del repo en el que se trabajó. → **Engram** (`mem_save`) con `ticket: WCH-NNN` en el frontmatter.
+- **Pista doc técnica de lo construido** — la verdad de implementación de algo ya buildeado → **el repo** (`/docs`, generada con `autowiki`). Es el handoff RumIAndo→repo del build.
+- **Hecho de fábrica** — si el evento en sí (decisión de sesión, transición, hallazgo) no quedó en RumIAndo, eso es un bug del proceso: registralo ahora por el **conector-rumiando**, no lo "documentes" en otro lado.
+
+## Fase 1 — Escribí el learning-doc (pista transversal → brain · ADR de producto → repo)
 
 Formato (`.md` git-first en el hub, `productos/…` o `decisiones/` según la frontera):
 
