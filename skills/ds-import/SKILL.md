@@ -55,9 +55,27 @@ Cuándo: se tocó/promovió un componente de la librería (reporte "DS re-sync p
    verbatim del diff; `_ds_sync.json` SIEMPRE último).
 5. Reportar: URL del proyecto, componentes actualizados, y si quedó algo local sin subir.
 
+## Tokens de tema NO son componentes (frontera clave)
+Esta skill mueve **componentes y diseños**, NO los tokens de tema (color, tipografía,
+radius, dark mode). Los tokens son fuente de verdad del **repo** — viven en `globals.css`
+(BackOffice: `web/src/app/globals.css`, bloques `:root`/`.dark`) y fluyen HACIA Claude
+Design vía el modo `sync`, nunca al revés. El `_ds_bundle.css`/`styles.css` del proyecto de
+Design son output compilado (se regeneran, no se editan).
+
+Si el usuario quiere **cambiar el tema**:
+1. Editar los tokens en `globals.css` (repo) — ahí impacta en los 50 componentes y toda la app.
+2. Verlo en vivo en la página `/design-system` del repo (`npm run dev`, hot reload — cambiás
+   un `--primary` oklch y se actualiza sin buildear).
+3. Commit + PR.
+4. Modo `sync` para que Claude Design refleje el tema nuevo.
+
+Claude Design sirve como sandbox visual para *decidir* valores de tema, pero el valor
+definitivo SIEMPRE se escribe en `globals.css`. No importar tokens desde Design.
+
 ## Reglas duras
 - Nunca editar el proyecto de Claude Design "a mano" (write_files sueltos fuera del flujo
   de sync) — rompe el ancla y el próximo diff miente.
 - Nunca subir un bundle a mitad de build o con validate en rojo.
 - El modo import NO toca el proyecto de Claude Design; el modo sync NO diseña — si el
   usuario pide las dos cosas, son dos pasadas en ese orden.
+- Tokens de tema: al repo (`globals.css`), nunca vía import desde Design.
