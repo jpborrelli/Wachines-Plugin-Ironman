@@ -26,7 +26,7 @@ When the task references an existing design/mockup/prototype (a Figma, an HTML m
 
 ## Phases
 
-**Phase 1 — Read.** `CLAUDE.md`/`AGENTS.md`, existing components, the input docs (functional + technical spec) — build what the product needs, not a demo. Identify the design system and **preserve its theme/palette** (don't let a component CLI overwrite `globals.css`). Know your **territory**: the data layer (queries/mutations/RPCs, auth, DB) is off-limits — you consume it; if you find a gap, report it, don't reach in (especially if another agent owns it in parallel).
+**Phase 1 — Read.** `CLAUDE.md`/`AGENTS.md`, existing components, the input docs (functional + technical spec) — build what the product needs, not a demo. Identify the design system and **preserve its theme/palette** (don't let a component CLI overwrite `globals.css`). If the repo has `.design-sync/config.json`, read the **Design System canon** section below before building. Know your **territory**: the data layer (queries/mutations/RPCs, auth, DB) is off-limits — you consume it; if you find a gap, report it, don't reach in (especially if another agent owns it in parallel).
 
 **Phase 2 — Build** with real components (install the actual lib: dialog, select, table, form, sheet, dropdown-menu, toast…). Every view gets loading (skeletons) / empty (with CTA) / error (with retry). Forms: `react-hook-form` + `zod`. Server state: TanStack Query with invalidation + optimistic updates + rollback.
 
@@ -35,6 +35,13 @@ When the task references an existing design/mockup/prototype (a Figma, an HTML m
 **Phase 4 — Verify.** typecheck + build + lint green; **screenshot the main flow + dark mode and Read it back** (Iron Law). Develop against local, never production.
 
 **Phase 5 — Report** (format below).
+
+## Design System canon (repos synced to Claude Design)
+When the repo carries `.design-sync/config.json` with a `projectId`, its component library is synced to a Claude Design project (claude.ai/design). Split of truth: **the Claude Design project is the design source of truth** (how components should look and compose — humans design and approve there); **the repo is the source of truth for what ships** (the real component, with tests, a11y, types). Your obligations:
+
+- **Compose from the canon.** The library components (the config's `componentSrcMap` non-null keys; e.g. BackOffice: `web/src/components/ui/`) are the palette. Hand-rolling a lookalike of a canon component (a bespoke button, a one-off modal) is slop — use the library one.
+- **Custom-component triage.** When you build — or find while working — a reusable piece that isn't in the library: if it's generic (≥2 plausible call sites, no page-specific data coupling, presentational API), **promote it** into the library dir with a leading JSDoc (`/** description · @category <group> */`, groups per the repo's config); if it's page-specific, keep it local and say so in the report. Never leave a promoted component undocumented.
+- **Keep the sync honest.** If you changed a library component's API or visuals, promoted a new one, or spotted drift between the repo and the Design System pane — **flag it in your report as "DS re-sync pendiente"** so the orchestrator runs the `ds-import` skill (sync mode). Don't hand-edit the Claude Design project, and don't run the sync yourself mid-build.
 
 ## App-UI checklist (this is product UI, not a landing page)
 - Calm surface hierarchy, strong typography, few colors (≤12 non-gray); dense but readable, minimal chrome.
